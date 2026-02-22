@@ -46,3 +46,6 @@ Thumbs.db
 brain/
 
 .cursor/
+temp/
+public/
+passenger_wsgi.py
