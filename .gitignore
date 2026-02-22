@@ -11,6 +11,13 @@ ENV/
 env.bak/
 venv.bak/
 
+# Project / env
+.env
+.env.*
+!.env.example
+index.html
+eindex.html
+
 # Django
 *.log
 local_settings.py
