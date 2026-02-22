@@ -34,12 +34,20 @@ class BlogPost(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
+    # Optional SEO overrides (leave blank to use title, excerpt, tags)
+    meta_title = models.CharField(max_length=200, blank=True, help_text="SEO title (default: post title)")
+    meta_description = models.CharField(max_length=320, blank=True, help_text="SEO description (default: excerpt)")
+    meta_keywords = models.CharField(max_length=500, blank=True, help_text="Comma-separated keywords (default: category + tags)")
 
     class Meta:
         ordering = ["-created_at"]
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse("blog_detail", kwargs={"slug": self.slug})
 
 
 class Comment(models.Model):

@@ -34,6 +34,9 @@ class BlogListView(ListView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.all()
         context["tags"] = Tag.objects.filter(posts__is_published=True).distinct()
+        context["list_meta_title"] = "Blog | Articles & Insights"
+        context["list_meta_description"] = "Articles and insights on Python, RPA, backend development, and automation."
+        context["list_meta_keywords"] = "blog, articles, python, rpa, backend, django, automation"
         return context
 
 
@@ -49,8 +52,20 @@ class BlogDetailView(FormMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["comments"] = self.object.comments.filter(is_active=True)
+        post = self.object
+        context["comments"] = post.comments.filter(is_active=True)
         context["form"] = self.get_form()
+        context["canonical_url"] = self.request.build_absolute_uri(post.get_absolute_url())
+        context["seo_title"] = post.meta_title or post.title
+        context["seo_description"] = post.meta_description or post.excerpt
+        _kw = post.meta_keywords
+        if not _kw:
+            _parts = []
+            if post.category:
+                _parts.append(post.category.name)
+            _parts.extend([t.name for t in post.tags.all()])
+            _kw = ", ".join(_parts)
+        context["seo_keywords"] = _kw
         return context
 
     def post(self, request, *args, **kwargs):

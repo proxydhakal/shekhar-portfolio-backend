@@ -231,14 +231,15 @@
                             <span>{{ site_config.location|default:site_config.address|default:"Kathmandu, Nepal" }}</span>
                         </div>
                     </div>
-                </div>
-                <form method="post" action="{% url 'index' %}#contact" class="space-y-6">
-                    {% csrf_token %}
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div class="p-4 rounded-2xl text-sm {% if message.tags == 'success' %}text-green-800 dark:text-green-400 bg-green-100 dark:bg-green-900/30{% else %}text-red-800 dark:text-red-400 bg-red-100 dark:bg-red-900/30{% endif %}">{{ message }}</div>
-                        {% endfor %}
+                    {% if qr_contact_url %}
+                    <div class="mt-8 pt-8 border-t border-slate-200 dark:border-white/10">
+                        <p class="text-xs font-mono text-slate-500 dark:text-slate-400 mb-3">Scan to add my contact (vCard)</p>
+                        <img src="{{ qr_contact_url }}" alt="QR code: add contact" class="w-[160px] h-[160px] rounded-xl bg-white p-2 border border-slate-200 dark:border-white/10 inline-block">
+                    </div>
                     {% endif %}
+                </div>
+                <form id="contact-form" method="post" action="{% url 'contact_submit' %}#contact" class="space-y-6">
+                    {% csrf_token %}
                     {{ contact_form.name }}
                     {{ contact_form.email }}
                     {{ contact_form.subject }}
@@ -248,4 +249,43 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function() {
+    var form = document.getElementById('contact-form');
+    if (!form || typeof Swal === 'undefined') return;
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var btn = form.querySelector('button[type="submit"]');
+        var origText = btn ? btn.textContent : '';
+        if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+        var formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, status: r.status, data: d }; }); })
+        .then(function(_r) {
+            if (btn) { btn.disabled = false; btn.textContent = origText; }
+            if (_r.ok && _r.data.success) {
+                Swal.fire({ icon: 'success', title: 'Message sent!', text: _r.data.message, confirmButtonColor: '#6366f1' });
+                form.reset();
+            } else {
+                var msg = _r.data.message || 'Please correct the errors and try again.';
+                if (_r.data.errors) {
+                    msg = Object.values(_r.data.errors).join(' ');
+                }
+                Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonColor: '#6366f1' });
+            }
+        })
+        .catch(function() {
+            if (btn) { btn.disabled = false; btn.textContent = origText; }
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Network error. Please try again.', confirmButtonColor: '#6366f1' });
+        });
+    });
+})();
+</script>
 {% endblock %}

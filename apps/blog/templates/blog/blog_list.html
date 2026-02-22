@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}{{ list_meta_title|default:"Blog" }} | {{ site_config.meta_title|default:"Shekhar Dhakal" }}{% endblock %}
+{% block meta_description %}{{ list_meta_description|default:"Blog articles and insights." }}{% endblock %}
+{% block meta_keywords %}{{ list_meta_keywords|default:"blog, articles" }}{% endblock %}
+
 {% block breadcrumb_items %}
 <li><span class="opacity-60" aria-hidden="true">/</span></li>
 <li><span class="text-slate-700 dark:text-slate-200">Blog</span></li>

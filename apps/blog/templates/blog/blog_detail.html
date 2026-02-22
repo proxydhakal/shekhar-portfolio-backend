@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}{{ seo_title|default:post.title }} | {{ site_config.meta_title|default:"Shekhar Dhakal" }}{% endblock %}
+{% block meta_description %}{{ seo_description|default:post.excerpt }}{% endblock %}
+{% block meta_keywords %}{{ seo_keywords }}{% endblock %}
+{% block extra_meta %}<link rel="canonical" href="{{ canonical_url }}">{% endblock %}
+
 {% block breadcrumb_items %}
 <li><span class="opacity-60" aria-hidden="true">/</span></li>
 <li><a href="{% url 'blog_list' %}" class="hover:text-primary transition-colors">Blog</a></li>
@@ -92,6 +97,16 @@
                 </div>
                 {% endif %}
             </header>
+
+            <!-- QR code: scan to open this article -->
+            <div class="flex flex-col items-center justify-center mb-12 p-6 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-white/10"
+                 x-show="show"
+                 x-transition:enter="transition ease-out duration-500 delay-400"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100">
+                <p class="text-sm font-mono text-slate-600 dark:text-slate-400 mb-3">Scan to open this article on your device</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&amp;data={{ canonical_url|urlencode }}&amp;format=svg" alt="QR code for this article" class="w-[180px] h-[180px] rounded-xl bg-white p-2 border border-slate-200 dark:border-white/10">
+            </div>
 
             <!-- Cover Image -->
             {% if post.cover_image %}

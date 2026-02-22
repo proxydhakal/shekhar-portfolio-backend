@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if site_config.meta_title %}{{ site_config.meta_title }}{% else %}{{ profile.name|default:"Shekhar Dhakal" }} | Python Developer & RPA Specialist{% endif %}</title>
-    <meta name="description" content="{{ site_config.meta_description|default:'Portfolio of Shekhar Dhakal, Backend Engineer & RPA Specialist.' }}">
-    <meta name="keywords" content="{{ site_config.meta_keywords|default:'backend, rpa, python, django, devops' }}">
+    <title>{% block title %}{% if site_config.meta_title %}{{ site_config.meta_title }}{% else %}{{ profile.name|default:"Shekhar Dhakal" }} | Python Developer & RPA Specialist{% endif %}{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{{ site_config.meta_description|default:'Portfolio of Shekhar Dhakal, Backend Engineer & RPA Specialist.' }}{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}{{ site_config.meta_keywords|default:'backend, rpa, python, django, devops' }}{% endblock %}">
+    {% block extra_meta %}{% endblock %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
     {% block favicon %}
     <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
@@ -40,6 +42,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.3/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('alpine:init', function() {
             window.Alpine.data('navbar', function() {
@@ -196,9 +199,8 @@
             <div class="mb-20">
                 <h3 class="text-2xl font-bold font-mono mb-4 text-slate-900 dark:text-white">Join the Newsletter</h3>
                 <p class="text-slate-600 dark:text-slate-500 font-mono text-xs mb-8">Periodic logs about RPA, Python, and system architecture.</p>
-                <form method="post" action="{% url 'index' %}" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <form id="newsletter-form" method="post" action="{% url 'newsletter_submit' %}" class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                     {% csrf_token %}
-                    <input type="hidden" name="subscribe_newsletter" value="true">
                     <input type="email" name="email" required placeholder="dev@example.com" class="flex-1 glass px-6 py-4 rounded-2xl outline-none border-none font-mono text-xs text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 bg-white/50 dark:bg-transparent" aria-label="Email for newsletter">
                     <button type="submit" class="bg-primary px-8 py-4 rounded-2xl font-bold font-mono text-xs text-white hover:opacity-90 transition-opacity">SUBSCRIBE</button>
                 </form>
@@ -277,6 +279,38 @@
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         const backToTop = document.getElementById('back-to-top');
         if (backToTop) backToTop.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Newsletter form: AJAX submit with SweetAlert2
+        (function() {
+            var form = document.getElementById('newsletter-form');
+            if (!form || typeof Swal === 'undefined') return;
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                var btn = form.querySelector('button[type="submit"]');
+                var origText = btn ? btn.textContent : '';
+                if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+                var formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+                .then(function(_r) {
+                    if (btn) { btn.disabled = false; btn.textContent = origText; }
+                    if (_r.ok && _r.data.success) {
+                        Swal.fire({ icon: 'success', title: 'Subscribed!', text: _r.data.message, confirmButtonColor: '#6366f1' });
+                        form.reset();
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: _r.data.message || 'Something went wrong.', confirmButtonColor: '#6366f1' });
+                    }
+                })
+                .catch(function() {
+                    if (btn) { btn.disabled = false; btn.textContent = origText; }
+                    Swal.fire({ icon: 'error', title: 'Error', text: 'Network error. Please try again.', confirmButtonColor: '#6366f1' });
+                });
+            });
+        })();
     </script>
     {% block extra_js %}{% endblock %}
 </body>
