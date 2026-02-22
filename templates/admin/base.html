@@ -1,0 +1,184 @@
+{% load i18n static %}
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:'en-us' }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{% endblock %}</title>
+<link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon-32x32.png' %}">
+<link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+<script>
+(function(){
+  var isDark = localStorage.adminTheme === 'dark' || (!('adminTheme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.documentElement.classList.toggle('dark', isDark);
+})();
+</script>
+<link rel="stylesheet" href="{% static 'css/dist/output.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+{% block dark-mode-vars %}{% endblock %}
+{% if not is_popup and is_nav_sidebar_enabled %}
+  <link rel="stylesheet" href="{% static 'admin/css/nav_sidebar.css' %}">
+  <script src="{% static 'admin/js/nav_sidebar.js' %}" defer></script>
+{% endif %}
+{% block extrastyle %}{% endblock %}
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+  .dark body { background: #020617; color: #e2e8f0; }
+  #header { background: linear-gradient(135deg, #6366f1 0%, #10b981 100%) !important; color: #fff !important; border: none !important; }
+  .dark #header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; }
+  #branding h1, #branding h1 a { color: #fff !important; font-family: 'Fira Code', monospace !important; font-weight: 700 !important; }
+  #branding h1 a:hover { color: #c7d2fe !important; }
+  #user-tools { color: rgba(255,255,255,0.9) !important; }
+  #user-tools a { color: #e0e7ff !important; }
+  #user-tools a:hover { color: #fff !important; }
+  #logout-form button { background: rgba(255,255,255,0.2) !important; color: #fff !important; border: 1px solid rgba(255,255,255,0.3) !important; padding: 6px 12px !important; border-radius: 8px !important; font-size: 13px !important; }
+  #logout-form button:hover { background: rgba(255,255,255,0.3) !important; }
+  .breadcrumbs { background: #f1f5f9 !important; color: #475569 !important; padding: 10px 24px !important; font-size: 13px !important; border-bottom: 1px solid #e2e8f0 !important; }
+  .dark .breadcrumbs { background: #0f172a !important; color: #94a3b8 !important; border-color: rgba(255,255,255,0.1) !important; }
+  .breadcrumbs a { color: #6366f1 !important; }
+  .breadcrumbs a:hover { color: #10b981 !important; }
+  #content { background: #fff !important; padding: 24px !important; }
+  .dark #content { background: #0f172a !important; color: #e2e8f0 !important; }
+  #content h1 { color: #0f172a !important; font-family: 'Fira Code', monospace !important; font-size: 1.5rem !important; border-bottom: 2px solid #6366f1 !important; padding-bottom: 8px !important; }
+  .dark #content h1 { color: #f1f5f9 !important; border-color: #6366f1 !important; }
+  .module h2, .module caption { background: #6366f1 !important; color: #fff !important; font-family: 'Fira Code', monospace !important; }
+  .dark .module h2, .dark .module caption { background: #1e293b !important; color: #e2e8f0 !important; border: 1px solid rgba(255,255,255,0.1) !important; }
+  input[type=text], input[type=password], input[type=email], input[type=url], input[type=number], textarea, select { border: 1px solid #cbd5e1 !important; border-radius: 8px !important; padding: 8px 12px !important; font-size: 14px !important; }
+  .dark input[type=text], .dark input[type=password], .dark input[type=email], .dark input[type=url], .dark input[type=number], .dark textarea, .dark select { background: #1e293b !important; border-color: rgba(255,255,255,0.2) !important; color: #e2e8f0 !important; }
+  .submit-row input[type=submit], .submit-row input.default { background: #6366f1 !important; color: #fff !important; border: none !important; padding: 10px 20px !important; border-radius: 8px !important; font-weight: 600 !important; }
+  .submit-row input[type=submit]:hover, .submit-row input.default:hover { background: #4f46e5 !important; }
+  a:link, a:visited { color: #6366f1 !important; }
+  a:hover { color: #10b981 !important; }
+  .button, input[type=submit], input[type=button], .submit-row input { border-radius: 8px !important; }
+  #content-main .form-row label { font-weight: 600 !important; color: #334155 !important; }
+  .dark #content-main .form-row label { color: #cbd5e1 !important; }
+  .errornote { background: #fef2f2 !important; color: #b91c1c !important; border: 1px solid #fecaca !important; border-radius: 8px !important; padding: 12px !important; }
+  .dark .errornote { background: rgba(185,28,28,0.2) !important; color: #fca5a5 !important; border-color: #b91c1c !important; }
+  .messagelist li.success { background: #ecfdf5 !important; color: #059669 !important; }
+  .dark .messagelist li.success { background: rgba(16,185,129,0.2) !important; color: #6ee7b7 !important; }
+</style>
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% block stylesheet_rtl %}{% static 'admin/css/rtl.css' %}{% endblock %}">{% endif %}
+{% block extrahead %}{% endblock %}
+{% block responsive %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{% static 'admin/css/responsive.css' %}">
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% static 'admin/css/responsive_rtl.css' %}">{% endif %}
+{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+</head>
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %} bg-slate-50 dark:bg-darkBg text-slate-900 dark:text-slate-100 transition-colors duration-300"
+  data-admin-utc-offset="{% now 'Z' %}">
+<a href="#content-start" class="skip-to-content-link">{% translate 'Skip to main content' %}</a>
+<div id="container">
+    {% if not is_popup %}
+    {% block header %}
+    <div id="header">
+        <div id="branding">
+        {% block branding %}{% endblock %}
+        </div>
+        {% block usertools %}
+        {% if has_permission %}
+        <div id="user-tools">
+            {% block welcome-msg %}
+                {% translate 'Welcome,' %}
+                <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+            {% endblock %}
+            {% block userlinks %}
+                {% if site_url %}
+                    <a href="{{ site_url }}">{% translate 'View site' %}</a> /
+                {% endif %}
+                {% if user.is_active and user.is_staff %}
+                    {% url 'django-admindocs-docroot' as docsroot %}
+                    {% if docsroot %}
+                        <a href="{{ docsroot }}">{% translate 'Documentation' %}</a> /
+                    {% endif %}
+                {% endif %}
+                {% if user.has_usable_password %}
+                <a href="{% url 'admin:password_change' %}">{% translate 'Change password' %}</a> /
+                {% endif %}
+                <form id="logout-form" method="post" action="{% url 'admin:logout' %}">
+                    {% csrf_token %}
+                    <button type="submit">{% translate 'Log out' %}</button>
+                </form>
+                {% include "admin/color_theme_toggle.html" %}
+            {% endblock %}
+        </div>
+        {% endif %}
+        {% endblock %}
+        {% block nav-global %}{% endblock %}
+    </div>
+    {% endblock %}
+    {% block nav-breadcrumbs %}
+      <nav aria-label="{% translate 'Breadcrumbs' %}">
+        {% block breadcrumbs %}
+          <div class="breadcrumbs">
+            <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+            {% if title %} &rsaquo; {{ title }}{% endif %}
+          </div>
+        {% endblock %}
+      </nav>
+    {% endblock %}
+    {% endif %}
+    <div class="main" id="main">
+      {% if not is_popup and is_nav_sidebar_enabled %}
+        {% block nav-sidebar %}
+          {% include "admin/nav_sidebar.html" %}
+        {% endblock %}
+      {% endif %}
+      <div id="content-start" class="content" tabindex="-1">
+        {% block messages %}
+          {% if messages %}
+            <ul class="messagelist">{% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+            {% endfor %}</ul>
+          {% endif %}
+        {% endblock messages %}
+        <div id="content" class="{% block coltype %}colM{% endblock %}">
+          {% block pretitle %}{% endblock %}
+          {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+          {% block content_subtitle %}{% if subtitle %}<h2>{{ subtitle }}</h2>{% endif %}{% endblock %}
+          {% block content %}
+            {% block object-tools %}{% endblock %}
+            {{ content }}
+          {% endblock %}
+          {% block sidebar %}{% endblock %}
+          <br class="clear">
+        </div>
+        {% block footer %}<div id="footer"></div>{% endblock %}
+      </div>
+    </div>
+</div>
+<svg xmlns="http://www.w3.org/2000/svg" class="base-svgs">
+  <symbol viewBox="0 0 24 24" width="1rem" height="1rem" id="icon-auto"><path d="M0 0h24v24H0z" fill="currentColor"/><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2V4a8 8 0 1 0 0 16z"/></symbol>
+  <symbol viewBox="0 0 24 24" width="1rem" height="1rem" id="icon-moon"><path d="M0 0h24v24H0z" fill="currentColor"/><path d="M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.979 6.979 0 0 0 10 7zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12z"/></symbol>
+  <symbol viewBox="0 0 24 24" width="1rem" height="1rem" id="icon-sun"><path d="M0 0h24v24H0z" fill="currentColor"/><path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/></symbol>
+</svg>
+<script>
+(function(){
+  function applyAdminTheme(isDark) {
+    document.documentElement.classList.toggle('dark', isDark);
+    localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+    document.querySelectorAll('.theme-toggle .theme-icon-when-dark, .theme-toggle .theme-icon-when-light').forEach(function(el){
+      if (!el) return;
+      var isDarkIcon = el.classList.contains('theme-icon-when-dark');
+      el.style.display = (isDark && !isDarkIcon) || (!isDark && isDarkIcon) ? 'none' : 'inline';
+    });
+  }
+  document.querySelectorAll('.theme-toggle').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var isDark = document.documentElement.classList.contains('dark');
+      applyAdminTheme(!isDark);
+    });
+  });
+  document.querySelectorAll('.theme-toggle .theme-icon-when-dark, .theme-toggle .theme-icon-when-light').forEach(function(el){
+    var isDark = document.documentElement.classList.contains('dark');
+    var isDarkIcon = el.classList.contains('theme-icon-when-dark');
+    el.style.display = (isDark && isDarkIcon) || (!isDark && !isDarkIcon) ? 'inline' : 'none';
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block breadcrumb_items %}
+<li><span class="opacity-60" aria-hidden="true">/</span></li>
+<li><a href="{% url 'blog_list' %}" class="hover:text-primary transition-colors">Blog</a></li>
+<li><span class="opacity-60" aria-hidden="true">/</span></li>
+<li class="text-slate-700 dark:text-slate-200 truncate max-w-[12rem]" title="{{ post.title }}">{{ post.title }}</li>
+{% endblock %}
+
+{% block breadcrumb_mobile_items %}
+<li><span class="opacity-60">/</span></li>
+<li><a href="{% url 'blog_list' %}" class="hover:text-primary">Blog</a></li>
+<li><span class="opacity-60">/</span></li>
+<li class="text-slate-700 dark:text-slate-200 truncate max-w-[80px]" title="{{ post.title }}">{{ post.title }}</li>
+{% endblock %}
+
+{% block content %}
+<article class="relative min-h-screen py-16">
+    <!-- Progress bar -->
+    <div class="fixed top-0 left-0 w-full h-1 z-[120]">
+        <div class="h-full bg-accent w-0" id="scrollProgress"></div>
+    </div>
+
+    <div class="max-w-5xl mx-auto px-6 pt-20" x-data="{ show: false }" x-init="setTimeout(() => show = true, 100)">
+        
+        <!-- Top Navigation -->
+        <div class="mb-12 flex justify-between items-center" 
+             x-show="show" 
+             x-transition:enter="transition ease-out duration-700" 
+             x-transition:enter-start="opacity-0 -translate-y-4" 
+             x-transition:enter-end="opacity-100 translate-y-0">
+            <a href="{% url 'blog_list' %}" class="inline-flex items-center gap-2 text-slate-600 dark:text-slate-200 hover:text-accent transition-all font-bold group px-4 py-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/10">
+                <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> 
+                <span>Back to Articles</span>
+            </a>
+            
+            <!-- Social Share (Visual Only) -->
+            <div class="flex gap-4">
+                <button class="w-10 h-10 rounded-full border border-slate-200 dark:border-white/20 flex items-center justify-center text-slate-600 dark:text-slate-200 hover:text-primary dark:hover:text-white hover:bg-primary/10 dark:hover:bg-white/10 hover:border-primary dark:hover:border-accent transition-all hover:scale-110">
+                    <i class="fa-brands fa-twitter"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full border border-slate-200 dark:border-white/20 flex items-center justify-center text-slate-600 dark:text-slate-200 hover:text-primary dark:hover:text-white hover:bg-primary/10 dark:hover:bg-white/10 hover:border-primary dark:hover:border-accent transition-all hover:scale-110">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </button>
+                <button class="w-10 h-10 rounded-full border border-slate-200 dark:border-white/20 flex items-center justify-center text-slate-600 dark:text-slate-200 hover:text-primary dark:hover:text-white hover:bg-primary/10 dark:hover:bg-white/10 hover:border-primary dark:hover:border-accent transition-all hover:scale-110">
+                    <i class="fa-solid fa-link"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="bg-white/90 dark:bg-slate-900/95 dark:backdrop-blur-xl backdrop-blur-md border border-slate-200 dark:border-white/15 rounded-[3rem] p-8 md:p-16 mb-20 relative overflow-hidden shadow-2xl dark:shadow-none dark:ring-1 dark:ring-white/10"
+             x-show="show"
+             x-transition:enter="transition ease-out duration-1000 delay-200"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100">
+             
+            <!-- Decorative Glows -->
+            <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/2 pointer-events-none"></div>
+
+            <!-- Header -->
+            <header class="text-center mb-16 relative z-10"
+                    x-show="show"
+                    x-transition:enter="transition ease-out duration-1000 delay-300"
+                    x-transition:enter-start="opacity-0 translate-y-8"
+                    x-transition:enter-end="opacity-100 translate-y-0">
+                    
+                <div class="flex flex-wrap justify-center gap-4 mb-8">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/10 border border-accent/20 text-accent text-[11px] font-bold uppercase tracking-widest shadow-lg shadow-accent/5">
+                        <i class="fa-regular fa-calendar"></i> {{ post.created_at|date:"F d, Y" }}
+                    </div>
+                    {% if post.category %}
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-100 dark:bg-slate-700/80 dark:border-white/20 border border-slate-200 dark:border-white/20 text-slate-700 dark:text-slate-100 text-[11px] font-bold uppercase tracking-widest transition-colors cursor-default">
+                        <i class="fa-solid fa-folder-open text-slate-500 dark:text-slate-400"></i> {{ post.category.name }}
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white leading-[1.1] tracking-tight mb-8">
+                    {{ post.title }}
+                </h1>
+
+                {% if post.tags.exists %}
+                <div class="flex flex-wrap justify-center gap-3">
+                    {% for tag in post.tags.all %}
+                    <a href="#" class="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-700/70 dark:border-white/15 hover:bg-slate-200 dark:hover:bg-slate-600/80 text-sm font-mono text-slate-700 dark:text-slate-200 hover:text-accent dark:hover:text-accent transition-all duration-300 border border-transparent dark:border-white/10 hover:border-accent/30">
+                        #{{ tag.name }}
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </header>
+
+            <!-- Cover Image -->
+            {% if post.cover_image %}
+            <div class="relative aspect-video rounded-3xl overflow-hidden mb-16 border border-slate-200 dark:border-white/10 mx-auto w-full shadow-2xl group"
+                 x-show="show"
+                 x-transition:enter="transition ease-out duration-1000 delay-500"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100">
+                <div class="absolute inset-0 bg-accent/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 mix-blend-overlay z-10"></div>
+                <img src="{{ post.cover_image.url }}" alt="{{ post.title }}" class="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-[2s]">
+            </div>
+            {% endif %}
+
+            <!-- Divider -->
+            <div class="w-24 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto mb-16 opacity-50"></div>
+
+            <!-- Content -->
+            <div class="prose prose-lg md:prose-xl dark:prose-invert w-full max-w-none 
+                        prose-headings:font-bold prose-headings:text-slate-900 dark:prose-headings:text-white prose-headings:tracking-tight
+                        prose-p:text-slate-600 dark:prose-p:text-slate-400 prose-p:leading-relaxed 
+                        prose-a:text-accent prose-a:no-underline prose-a:border-b prose-a:border-accent/30 hover:prose-a:border-accent hover:prose-a:text-primary dark:hover:prose-a:text-white prose-a:transition-all
+                        prose-strong:text-slate-900 dark:prose-strong:text-white prose-strong:font-bold
+                        prose-code:text-accent prose-code:bg-accent/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+                        prose-pre:bg-slate-100 dark:prose-pre:bg-primary/50 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-white/10 prose-pre:rounded-2xl prose-pre:shadow-xl
+                        prose-blockquote:border-l-4 prose-blockquote:border-accent prose-blockquote:bg-slate-50 dark:prose-blockquote:bg-accent/5 prose-blockquote:px-6 prose-blockquote:py-2 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-slate-700 dark:prose-blockquote:text-slate-300
+                        prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-slate-200 dark:prose-img:border-white/5
+                        mb-20 relative z-10"
+                 x-show="show"
+                 x-transition:enter="transition ease-out duration-1000 delay-700"
+                 x-transition:enter-start="opacity-0 translate-y-8"
+                 x-transition:enter-end="opacity-100 translate-y-0">
+                {{ post.content|safe }}
+            </div>
+
+            <!-- Comments Section -->
+            <div class="w-full relative z-10"
+                 x-data="{ activeTab: 'comments' }"
+                 x-show="show"
+                 x-transition:enter="transition ease-out duration-1000 delay-1000"
+                 x-transition:enter-start="opacity-0 translate-y-8"
+                 x-transition:enter-end="opacity-100 translate-y-0">
+                 
+                <!-- Section Header -->
+                <div class="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-6 mb-10">
+                    <h3 class="text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-4">
+                        <span class="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-purple-600 flex items-center justify-center text-xl text-white shadow-lg shadow-accent/20">
+                            <i class="fa-solid fa-comments"></i>
+                        </span>
+                        Discussion <span class="text-lg text-slate-600 dark:text-slate-500 font-normal">({{ comments.count }})</span>
+                    </h3>
+                </div>
+                
+                <div class="grid lg:grid-cols-3 gap-12">
+                    <!-- Comment Form (Left/Top) -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-slate-50 dark:bg-slate-800/90 dark:border-white/15 rounded-3xl p-8 border border-slate-200 dark:border-white/15 sticky top-32">
+                            <h4 class="text-xl font-bold text-slate-900 dark:text-white mb-6">Leave a Reply</h4>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="p-4 mb-4 rounded-2xl text-sm {% if message.tags == 'success' %}text-green-800 dark:text-green-400 bg-green-100 dark:bg-green-900/30{% else %}text-red-800 dark:text-red-400 bg-red-100 dark:bg-red-900/30{% endif %}">{{ message }}</div>
+                            {% endfor %}
+                            {% endif %}
+                            <form method="post" class="space-y-4">
+                                {% csrf_token %}
+                                
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-500 ml-2">Name</label>
+                                    {{ form.name }}
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-500 ml-2">Email</label>
+                                    {{ form.email }}
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-500 ml-2">Message</label>
+                                    {{ form.content }}
+                                </div>
+
+                                <button type="submit" class="w-full py-4 bg-gradient-to-r from-accent to-blue-500 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 mt-4 group">
+                                    Post Comment <i class="fa-solid fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Comments List (Right/Bottom) -->
+                    <div class="lg:col-span-2 space-y-6">
+                        {% for comment in comments %}
+                        <div class="group bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700/80 p-8 rounded-[2rem] border border-slate-200 dark:border-white/15 hover:border-accent/20 transition-all duration-300">
+                            <div class="flex gap-6">
+                                <div class="flex-shrink-0">
+                                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-500 to-slate-700 dark:from-slate-700 dark:to-slate-900 flex items-center justify-center text-white font-bold text-xl border border-slate-200 dark:border-white/10 shadow-inner">
+                                        {{ comment.name.0|upper }}
+                                    </div>
+                                </div>
+                                <div class="flex-grow">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-2">
+                                        <h5 class="text-slate-900 dark:text-white font-bold text-lg decoration-accent underline-offset-4 group-hover:underline">{{ comment.name }}</h5>
+                                        <span class="text-xs font-mono text-slate-600 dark:text-slate-500 bg-slate-200/50 dark:bg-white/5 px-2 py-1 rounded-md">{{ comment.created_at|timesince }} ago</span>
+                                    </div>
+                                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed text-sm md:text-base">{{ comment.content }}</p>
+                                    
+                                    <!-- Interaction Buttons (Visual) -->
+                                    <div class="flex gap-4 mt-6 pt-6 border-t border-slate-200 dark:border-white/5 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                                        <button class="text-xs font-bold text-slate-600 dark:text-slate-500 hover:text-accent flex items-center gap-2 transition-colors">
+                                            <i class="fa-regular fa-thumbs-up"></i> Helpful
+                                        </button>
+                                        <button class="text-xs font-bold text-slate-600 dark:text-slate-500 hover:text-primary dark:hover:text-white flex items-center gap-2 transition-colors">
+                                            <i class="fa-solid fa-reply"></i> Reply
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-16 bg-slate-50 dark:bg-slate-800/60 rounded-[3rem] border border-slate-200 dark:border-white/15 border-dashed">
+                            <i class="fa-regular fa-comments text-4xl text-slate-400 dark:text-slate-500 mb-4 block"></i>
+                            <p class="text-slate-600 dark:text-slate-300 text-lg">No comments yet.</p>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm">Be the first to join the conversation.</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</article>
+
+<script>
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        document.getElementById("scrollProgress").style.width = scrolled + "%";
+    });
+</script>
+{% endblock %}

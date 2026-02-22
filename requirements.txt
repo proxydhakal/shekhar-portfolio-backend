@@ -1,0 +1,13 @@
+asgiref==3.11.0
+Django==5.2.1
+django-ckeditor==6.7.3
+django-js-asset==2.2.0
+pillow==11.3.0
+python-dotenv==1.2.1
+sqlparse==0.5.5
+typing_extensions==4.15.0
+tzdata==2025.3
+whitenoise==6.11.0
+
+# MySQL (production; required when ENVIRONMENT=production)
+mysqlclient==2.2.7
