@@ -32,11 +32,12 @@ DATABASES = {
 if not DATABASES['default']['NAME'] or not DATABASES['default']['USER']:
     raise ValueError('Production requires DB_NAME, DB_USER, DB_PASSWORD (and optionally DB_HOST, DB_PORT) in .env')
 
-# SMTP email from env
+# SMTP email from env (supports SSL on port 465 or TLS on 587)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
-EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True').strip().lower() in ('true', '1', 'yes')
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').strip().lower() in ('true', '1', 'yes')
+EMAIL_USE_TLS = not EMAIL_USE_SSL and os.getenv('EMAIL_USE_TLS', 'True').strip().lower() in ('true', '1', 'yes')
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL') or EMAIL_HOST_USER or 'noreply@localhost'
