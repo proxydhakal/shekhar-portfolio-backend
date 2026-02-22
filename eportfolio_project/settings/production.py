@@ -2,8 +2,10 @@
 Production settings.
 Used when ENVIRONMENT=production.
 Requires .env with DB_*, EMAIL_*, ALLOWED_HOSTS set.
+Static/media can be overridden for cPanel (e.g. public_html/staticfiles, public_html/media).
 """
 import os
+from pathlib import Path
 from .base import *  # noqa: F401, F403
 
 DEBUG = False
@@ -43,8 +45,19 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL') or EMAIL_HOST_USER or 'noreply@localhost'
 DEFAULT_FROM_EMAIL = EMAIL_FROM
 
-# Static: WhiteNoise with compression and manifest
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Static and media: allow env override; default to cPanel public_html paths when not set
+_default_static_root = os.getenv('STATIC_ROOT', '/home/shekhard/public_html/staticfiles')
+_default_media_root = os.getenv('MEDIA_ROOT', '/home/shekhard/public_html/media')
+STATIC_ROOT = Path(_default_static_root)
+MEDIA_ROOT = Path(_default_media_root)
+STATIC_URL = os.getenv('STATIC_URL', '/static/')
+MEDIA_URL = os.getenv('MEDIA_URL', '/media/')
+
+# WhiteNoise for compressed static files; override with STATICFILES_STORAGE in .env if cPanel serves static
+STATICFILES_STORAGE = os.getenv(
+    'STATICFILES_STORAGE',
+    'whitenoise.storage.CompressedManifestStaticFilesStorage',
+)
 
 # ---------- Security (XSS, HTTPS, cookies, headers) ----------
 # HTTPS
