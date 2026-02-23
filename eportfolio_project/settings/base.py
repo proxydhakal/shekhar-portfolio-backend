@@ -89,8 +89,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Silence django-ckeditor security/LTS warning (CKEditor 4.22.1)
 SILENCED_SYSTEM_CHECKS = ['ckeditor.W001']
 
-# Email sender (used for all outgoing mail; EMAIL_FROM takes precedence over DEFAULT_FROM_EMAIL)
-EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL', 'noreply@localhost')
+# Email — SMTP for both local and production (configure via .env)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL', 'False').strip().lower() in ('true', '1', 'yes')
+EMAIL_USE_TLS = not EMAIL_USE_SSL and os.getenv('EMAIL_USE_TLS', 'True').strip().lower() in ('true', '1', 'yes')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL') or EMAIL_HOST_USER or 'noreply@localhost'
 DEFAULT_FROM_EMAIL = EMAIL_FROM
 
 # CKEditor — allow HTML tags (h2, pre, p, etc.) to be saved in RichTextField

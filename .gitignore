@@ -14,7 +14,7 @@ venv.bak/
 # Project / env
 .env
 .env.*
-!.env.example
+.env.example
 index.html
 eindex.html
 test.html

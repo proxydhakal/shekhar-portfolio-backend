@@ -18,10 +18,5 @@ DATABASES = {
     }
 }
 
-# Console email backend (no SMTP)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL', 'noreply@localhost')
-DEFAULT_FROM_EMAIL = EMAIL_FROM
-
 # Optional: do not use WhiteNoise manifest in local (faster)
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
