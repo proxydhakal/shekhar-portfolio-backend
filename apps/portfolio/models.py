@@ -19,6 +19,10 @@ class SingletonModel(models.Model):
 
 
 class SiteConfiguration(SingletonModel):
+    class Meta:
+        verbose_name = "Site Configuration"
+        verbose_name_plural = "Site Configuration"
+
     site_name = models.CharField(max_length=255, default="Shekhar's Portfolio")
     meta_title = models.CharField(max_length=255, default="Shekhar Dhakal | Backend & RPA Architect")
     meta_description = models.TextField(
@@ -54,6 +58,10 @@ class SiteConfiguration(SingletonModel):
 
 
 class Profile(models.Model):
+    class Meta:
+        verbose_name = "Profile"
+        verbose_name_plural = "Profiles"
+
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=200)
     bio = models.TextField()
@@ -77,11 +85,13 @@ class NewsletterSubscriber(models.Model):
     subscribed_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
 
-    def __str__(self):
-        return self.email
-
     class Meta:
         ordering = ["-subscribed_at"]
+        verbose_name = "Newsletter Subscriber"
+        verbose_name_plural = "Newsletter Subscribers"
+
+    def __str__(self):
+        return self.email
 
 
 class Skill(models.Model):
@@ -103,6 +113,8 @@ class Skill(models.Model):
 
     class Meta:
         ordering = ["order", "name"]
+        verbose_name = "Skill"
+        verbose_name_plural = "Skills"
 
     def __str__(self):
         return f"{self.name} ({self.category})"
@@ -123,11 +135,13 @@ class Project(models.Model):
         max_length=30, blank=True, help_text="e.g. primary, secondary, accent, blue-400"
     )
 
-    def __str__(self):
-        return self.title
-
     class Meta:
         ordering = ["order"]
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+
+    def __str__(self):
+        return self.title
 
 
 class Experience(models.Model):
@@ -140,11 +154,13 @@ class Experience(models.Model):
         default=False, help_text="Use primary color for timeline dot"
     )
 
-    def __str__(self):
-        return f"{self.role} at {self.company}"
-
     class Meta:
         ordering = ["order"]
+        verbose_name = "Experience"
+        verbose_name_plural = "Experiences"
+
+    def __str__(self):
+        return f"{self.role} at {self.company}"
 
 
 class Education(models.Model):
@@ -156,6 +172,8 @@ class Education(models.Model):
 
     class Meta:
         ordering = ["order"]
+        verbose_name = "Education"
+        verbose_name_plural = "Education"
 
     def __str__(self):
         return f"{self.degree} at {self.institution}"
@@ -169,12 +187,18 @@ class Certification(models.Model):
 
     class Meta:
         ordering = ["order"]
+        verbose_name = "Certification"
+        verbose_name_plural = "Certifications"
 
     def __str__(self):
         return self.title
 
 
 class ContactMessage(models.Model):
+    class Meta:
+        verbose_name = "Contact Message"
+        verbose_name_plural = "Contact Messages"
+
     name = models.CharField(max_length=100)
     email = models.EmailField()
     subject = models.CharField(max_length=200)

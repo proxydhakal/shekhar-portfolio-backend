@@ -59,6 +59,41 @@
   .dark .errornote { background: rgba(185,28,28,0.2) !important; color: #fca5a5 !important; border-color: #b91c1c !important; }
   .messagelist li.success { background: #ecfdf5 !important; color: #059669 !important; }
   .dark .messagelist li.success { background: rgba(16,185,129,0.2) !important; color: #6ee7b7 !important; }
+  /* Delete button/link: always visible red with proper contrast */
+  .deletelink, .deletelink-box a, a.deletelink {
+    background: #dc2626 !important;
+    color: #fff !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-weight: 600 !important;
+    border: none !important;
+  }
+  .deletelink:hover, .deletelink-box a:hover, a.deletelink:hover {
+    background: #b91c1c !important;
+    color: #fff !important;
+  }
+  .dark .deletelink, .dark .deletelink-box a, .dark a.deletelink {
+    background: #dc2626 !important;
+    color: #fff !important;
+  }
+  .dark .deletelink:hover, .dark .deletelink-box a:hover, .dark a.deletelink:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+  }
+  /* Dark theme: tables, lists, and content visibility */
+  .dark #content-main table { color: #e2e8f0 !important; border-color: rgba(255,255,255,0.1) !important; }
+  .dark #content-main th, .dark #content-main td { color: #e2e8f0 !important; border-color: rgba(255,255,255,0.1) !important; }
+  .dark #content-main th a, .dark #content-main td a { color: #93c5fd !important; }
+  .dark #content-main .help, .dark #content-main p.help, .dark .help { color: #94a3b8 !important; }
+  .dark .change-list table thead th { background: #1e293b !important; color: #e2e8f0 !important; border-color: rgba(255,255,255,0.1) !important; }
+  .dark .change-list table tbody tr { background: #0f172a !important; }
+  .dark .change-list table tbody tr:hover { background: #1e293b !important; }
+  .dark #result_list { color: #e2e8f0 !important; }
+  .dark .paginator a, .dark .paginator span { color: #94a3b8 !important; }
+  .dark .object-tools a { color: #e2e8f0 !important; }
+  .dark .addlink, .dark .changelink { color: #93c5fd !important; }
 </style>
 {% if LANGUAGE_BIDI %}<link rel="stylesheet" href="{% block stylesheet_rtl %}{% static 'admin/css/rtl.css' %}{% endblock %}">{% endif %}
 {% block extrahead %}{% endblock %}

@@ -7,6 +7,7 @@ class Category(models.Model):
     slug = models.SlugField(unique=True)
 
     class Meta:
+        verbose_name = "Category"
         verbose_name_plural = "Categories"
 
     def __str__(self):
@@ -16,6 +17,10 @@ class Category(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
+
+    class Meta:
+        verbose_name = "Tag"
+        verbose_name_plural = "Tags"
 
     def __str__(self):
         return self.name
@@ -41,6 +46,8 @@ class BlogPost(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+        verbose_name = "Blog Post"
+        verbose_name_plural = "Blog Posts"
 
     def __str__(self):
         return self.title
@@ -60,6 +67,8 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ["created_at"]
+        verbose_name = "Comment"
+        verbose_name_plural = "Comments"
 
     def __str__(self):
         return f"Comment by {self.name} on {self.post}"
