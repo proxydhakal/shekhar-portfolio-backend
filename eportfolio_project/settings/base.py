@@ -93,11 +93,14 @@ SILENCED_SYSTEM_CHECKS = ['ckeditor.W001']
 EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL', 'noreply@localhost')
 DEFAULT_FROM_EMAIL = EMAIL_FROM
 
-# CKEditor
+# CKEditor — allow HTML tags (h2, pre, p, etc.) to be saved in RichTextField
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
         'height': 300,
         'width': '100%',
+        'allowedContent': True,
+        'extraAllowedContent': 'h1 h2 h3 h4 h5 h6 pre p br div span ul ol li strong em(*)',
+        'removePlugins': 'stylesheetparser',
     },
 }

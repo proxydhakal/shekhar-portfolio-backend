@@ -4,13 +4,13 @@
 {% block title %}500 | {% firstof site_config.meta_title profile.name "Shekhar Dhakal" %} | Portfolio{% endblock %}
 
 {% block content %}
-<main class="min-h-[80vh] flex items-center justify-center px-4 pt-24 pb-16">
-    <div class="max-w-2xl w-full text-center reveal">
+<main class="min-h-[80vh] flex items-center justify-center px-4 pb-16" style="padding-top: calc(5rem + 2vh);">
+    <div class="max-w-2xl w-full text-center">
         <p class="font-mono text-sm text-primary dark:text-indigo-400 mb-2">500</p>
-        <h1 class="text-4xl sm:text-5xl font-bold font-mono text-slate-900 dark:text-white mb-4">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold font-mono text-slate-900 dark:text-white mb-4">
             Server error
         </h1>
-        <p class="text-slate-600 dark:text-slate-400 font-mono text-sm mb-8 max-w-md mx-auto">
+        <p class="text-slate-600 dark:text-slate-400 font-mono text-sm sm:text-base mb-8 max-w-md mx-auto">
             Something went wrong on our end. We've been notified and are looking into it.
         </p>
         <a href="{% url 'index' %}" class="inline-flex items-center gap-2 glass px-6 py-3 rounded-2xl font-mono text-sm font-semibold text-slate-900 dark:text-white hover:opacity-90 transition-opacity border border-slate-200 dark:border-white/10">
