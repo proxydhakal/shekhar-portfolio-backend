@@ -100,6 +100,9 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
 EMAIL_FROM = os.getenv('EMAIL_FROM') or os.getenv('DEFAULT_FROM_EMAIL') or EMAIL_HOST_USER or 'noreply@localhost'
 DEFAULT_FROM_EMAIL = EMAIL_FROM
 
+# Base URL for absolute links in emails (e.g. https://www.shekhardhakal.com.np)
+SITE_URL = os.getenv('SITE_URL', '').rstrip('/')
+
 # CKEditor — allow HTML tags (h2, pre, p, etc.) to be saved in RichTextField
 CKEDITOR_CONFIGS = {
     'default': {

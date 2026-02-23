@@ -133,7 +133,7 @@ def index(request):
     vcard_lines.append(f"URL:{site_url}")
     vcard_lines.append("END:VCARD")
     vcard_string = "\r\n".join(vcard_lines)
-    qr_contact_url = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + quote(vcard_string)
+    qr_contact_url = "https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=" + quote(vcard_string)
 
     context = {
         "profile": profile,

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Article</title>
+</head>
+<body style="margin:0; font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8fafc; padding: 24px;">
+    <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); overflow: hidden;">
+        <div style="background: linear-gradient(135deg, #6366f1 0%, #10b981 100%); padding: 28px 24px; text-align: center;">
+            <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">New Article Posted</h1>
+        </div>
+        <div style="padding: 28px 24px;">
+            <p style="margin: 0 0 16px; color: #334155; font-size: 15px; line-height: 1.6;">Hi there,</p>
+            <p style="margin: 0 0 20px; color: #475569; font-size: 15px; line-height: 1.6;">A new article has been posted on {{ site_name|default:"my blog" }}.</p>
+            <div style="background-color: #f8fafc; border-left: 4px solid #6366f1; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0;">
+                <p style="margin: 0 0 8px; font-size: 15px; color: #334155; font-weight: 600;">{{ post_title }}</p>
+                {% if post_excerpt %}<p style="margin: 0; font-size: 13px; color: #64748b; line-height: 1.5;">{{ post_excerpt }}</p>{% endif %}
+            </div>
+            <p style="margin: 0 0 24px; color: #475569; font-size: 15px; line-height: 1.6;">View the article here:</p>
+            <a href="{{ post_url }}" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #6366f1 0%, #10b981 100%); color: #ffffff; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 8px;">View article</a>
+        </div>
+        <div style="padding: 20px 24px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
+            &copy; {% now "Y" %} {{ site_name|default:"Shekhar Dhakal" }}. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
