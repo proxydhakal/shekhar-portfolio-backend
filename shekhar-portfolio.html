@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="en" x-data="app()" x-init="init()">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shekhar Dhakal — Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { poppins: ['Poppins', 'sans-serif'] },
+          colors: {
+            brand: '#00F5C4',
+            brandpink: '#FF2D78',
+            dark: '#050811',
+            card: '#0C1120',
+            border: '#1A2540',
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'float2': 'float 8s ease-in-out infinite 2s',
+            'float3': 'float 7s ease-in-out infinite 4s',
+            'spin-slow': 'spin 20s linear infinite',
+            'pulse-slow': 'pulse 4s ease-in-out infinite',
+            'shimmer': 'shimmer 2s linear infinite',
+            'gradient-x': 'gradient-x 4s ease infinite',
+            'fade-up': 'fadeUp 0.7s ease both',
+          },
+          keyframes: {
+            float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
+            shimmer: { '0%': { backgroundPosition: '-200% center' }, '100%': { backgroundPosition: '200% center' } },
+            'gradient-x': { '0%,100%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' } },
+            fadeUp: { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: #050811; color: #e2e8f0; overflow-x: hidden; }
+    ::selection { background: #00F5C4; color: #050811; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #050811; }
+    ::-webkit-scrollbar-thumb { background: #00F5C4; border-radius: 2px; }
+
+    /* CANVAS PARTICLES */
+    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+    /* GRID OVERLAY */
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,245,196,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,196,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* GLOW BLOB */
+    .glow-blob {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; opacity: 0.18;
+      animation: float 8s ease-in-out infinite;
+    }
+
+    /* GLASS CARD */
+    .glass {
+      background: rgba(12,17,32,0.7);
+      border: 1px solid rgba(0,245,196,0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .glass:hover {
+      border-color: rgba(0,245,196,0.35);
+      box-shadow: 0 0 30px rgba(0,245,196,0.08), inset 0 0 30px rgba(0,245,196,0.03);
+      transition: all 0.4s ease;
+    }
+
+    /* NEON TEXT */
+    .neon-text { color: #00F5C4; text-shadow: 0 0 20px rgba(0,245,196,0.6), 0 0 40px rgba(0,245,196,0.3); }
+    .neon-pink { color: #FF2D78; text-shadow: 0 0 20px rgba(255,45,120,0.6); }
+
+    /* GRADIENT TEXT */
+    .grad-text {
+      background: linear-gradient(135deg, #00F5C4, #00B4D8, #FF2D78);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-x 4s ease infinite;
+    }
+
+    /* TYPEWRITER */
+    .typewriter { border-right: 2px solid #00F5C4; animation: blink 0.8s step-end infinite; }
+    @keyframes blink { '0%,100%': { border-color: transparent } '50%': { border-color: #00F5C4 } }
+
+    /* SKILL TAG */
+    .skill-tag {
+      background: rgba(0,245,196,0.08);
+      border: 1px solid rgba(0,245,196,0.2);
+      color: #00F5C4;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    .skill-tag:hover {
+      background: rgba(0,245,196,0.2);
+      border-color: #00F5C4;
+      box-shadow: 0 0 12px rgba(0,245,196,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* CTA BUTTON */
+    .btn-primary {
+      background: linear-gradient(135deg, #00F5C4, #00B4D8);
+      color: #050811;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #00B4D8, #00F5C4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .btn-primary:hover::before { opacity: 1; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,245,196,0.35); }
+    .btn-primary span { position: relative; z-index: 1; }
+
+    .btn-outline {
+      background: transparent;
+      color: #00F5C4;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(0,245,196,0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+    }
+    .btn-outline:hover {
+      background: rgba(0,245,196,0.1);
+      border-color: #00F5C4;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,245,196,0.15);
+    }
+
+    /* NAV */
+    .nav-link {
+      position: relative; color: #94a3b8; font-size: 14px; font-weight: 500;
+      transition: color 0.3s ease; cursor: pointer; text-decoration: none;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1.5px;
+      background: #00F5C4; transition: width 0.3s ease;
+    }
+    .nav-link:hover { color: #00F5C4; }
+    .nav-link:hover::after { width: 100%; }
+
+    /* SECTION REVEAL */
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* PROJECT CARD */
+    .project-card {
+      position: relative; overflow: hidden;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), box-shadow 0.4s ease;
+    }
+    .project-card::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,245,196,0.05), transparent);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .project-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.4), 0 0 40px rgba(0,245,196,0.08); }
+    .project-card:hover::after { opacity: 1; }
+
+    /* TIMELINE */
+    .timeline-line {
+      position: absolute; left: 20px; top: 0; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent, #00F5C4, transparent);
+    }
+    .timeline-dot {
+      position: absolute; left: 14px; top: 6px; width: 13px; height: 13px;
+      border-radius: 50%; background: #00F5C4; border: 2px solid #050811;
+      box-shadow: 0 0 10px rgba(0,245,196,0.6);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      height: 3px; background: rgba(0,245,196,0.15); border-radius: 2px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: linear-gradient(90deg, #00F5C4, #00B4D8);
+      border-radius: 2px; transition: width 1.5s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 0 10px rgba(0,245,196,0.5);
+    }
+
+    /* FORM INPUT */
+    .form-input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 14px 18px; color: #e2e8f0;
+      font-family: 'Poppins', sans-serif; font-size: 14px;
+      transition: all 0.3s ease; outline: none;
+    }
+    .form-input:focus {
+      border-color: rgba(0,245,196,0.5);
+      box-shadow: 0 0 0 3px rgba(0,245,196,0.08);
+      background: rgba(0,245,196,0.04);
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* TECH ICON */
+    .tech-icon {
+      width: 70px; height: 70px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px;
+      background: rgba(12,17,32,0.8);
+      border: 1px solid rgba(0,245,196,0.1);
+      transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+      cursor: default;
+    }
+    .tech-icon:hover {
+      transform: translateY(-8px) scale(1.08);
+      border-color: rgba(0,245,196,0.4);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(0,245,196,0.15);
+    }
+
+    /* COUNTER */
+    .stat-number {
+      font-size: 48px; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, #00F5C4, #00B4D8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* FLOATING BADGE */
+    @keyframes badgePop { 0%,100%{ transform: scale(1) rotate(-3deg); } 50%{ transform: scale(1.05) rotate(-3deg); } }
+    .floating-badge { animation: badgePop 3s ease-in-out infinite; }
+
+    /* CURSOR GLOW */
+    #cursor-glow {
+      position: fixed; width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,245,196,0.06) 0%, transparent 70%);
+      pointer-events: none; z-index: 1; transform: translate(-50%,-50%);
+      transition: opacity 0.3s ease;
+    }
+
+    /* MOBILE NAV */
+    .mobile-menu {
+      background: rgba(5,8,17,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,245,196,0.1);
+    }
+
+    /* BLOG CARD */
+    .blog-card { transition: all 0.4s ease; }
+    .blog-card:hover { transform: translateY(-6px); }
+    .blog-thumb { aspect-ratio: 16/9; overflow: hidden; border-radius: 12px 12px 0 0; background: linear-gradient(135deg, #0C1120, #1A2540); }
+
+    /* SECTION LABEL */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: #00F5C4;
+    }
+    .section-label::before, .section-label::after {
+      content: ''; flex: 1; height: 1px; background: rgba(0,245,196,0.3);
+      min-width: 30px;
+    }
+  </style>
+</head>
+
+<body class="font-poppins bg-dark text-slate-200 relative">
+
+  <!-- Cursor glow -->
+  <div id="cursor-glow"></div>
+
+  <!-- Grid bg -->
+  <div class="grid-bg"></div>
+
+  <!-- Canvas particles -->
+  <canvas id="particles"></canvas>
+
+  <!-- ===================== NAVBAR ===================== -->
+  <nav class="fixed top-0 left-0 right-0 z-50 px-6 py-4 transition-all duration-500"
+       :class="scrolled ? 'glass shadow-2xl' : ''"
+       x-data="{ open: false, scrolled: false }"
+       @scroll.window="scrolled = window.scrollY > 40">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="text-xl font-black tracking-tight">
+        <span class="neon-text">S</span><span class="text-white">D</span>
+        <span class="text-xs font-medium text-slate-500 ml-1 align-middle">/ dev</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#about" class="nav-link">About</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#career" class="nav-link">Work History</a>
+        <a href="#contact" class="nav-link">Contact</a>
+        <a href="#contact" class="btn-primary text-sm px-5 py-2.5"><span>Hire Me</span></a>
+      </div>
+
+      <!-- Mobile toggle -->
+      <button class="md:hidden text-brand focus:outline-none" @click="open = !open">
+        <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div x-show="open" x-transition class="mobile-menu md:hidden mt-4 p-6 rounded-2xl flex flex-col gap-4">
+      <a href="#about" @click="open=false" class="nav-link text-lg">About</a>
+      <a href="#skills" @click="open=false" class="nav-link text-lg">Skills</a>
+      <a href="#projects" @click="open=false" class="nav-link text-lg">Projects</a>
+      <a href="#career" @click="open=false" class="nav-link text-lg">Work History</a>
+      <a href="#contact" @click="open=false" class="nav-link text-lg">Contact</a>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden px-6 pt-24 pb-20">
+    <!-- Glow blobs -->
+    <div class="glow-blob w-96 h-96 bg-brand" style="top:-5%;left:-10%;animation-delay:0s;"></div>
+    <div class="glow-blob w-80 h-80 bg-brandpink" style="top:60%;right:-8%;animation-delay:3s;opacity:0.12;"></div>
+    <div class="glow-blob w-64 h-64 bg-blue-400" style="bottom:10%;left:30%;animation-delay:1.5s;opacity:0.1;"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center">
+      <!-- TEXT -->
+      <div>
+        <!-- Status badge -->
+        <div class="inline-flex items-center gap-3 glass px-4 py-2 rounded-full mb-8" style="border-color:rgba(0,245,196,0.25);">
+          <span class="w-2 h-2 rounded-full bg-brand animate-ping absolute"></span>
+          <span class="w-2 h-2 rounded-full bg-brand relative"></span>
+          <span class="text-xs font-semibold text-slate-300 tracking-wider">AVAILABLE FOR OPPORTUNITIES</span>
+        </div>
+
+        <h1 class="text-5xl md:text-7xl font-black leading-none mb-4">
+          <span class="block text-white">Shekhar</span>
+          <span class="block grad-text mt-1">Dhakal</span>
+        </h1>
+
+        <div class="flex items-center gap-3 mb-6">
+          <div class="h-px w-12 bg-brand opacity-50"></div>
+          <p class="text-brand text-sm font-semibold tracking-widest uppercase" x-text="roles[roleIndex]"></p>
+        </div>
+
+        <p class="text-slate-400 text-lg leading-relaxed mb-10 max-w-lg font-light">
+          Result-driven developer with <strong class="text-slate-200 font-semibold">3+ years</strong> experience building scalable applications and automating mission-critical banking processes.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <a href="#projects" class="btn-primary"><span>View Terminal ↗</span></a>
+          <a href="#contact" class="btn-outline">Initialize Connection</a>
+        </div>
+
+        <!-- Mini stats -->
+        <div class="flex gap-10 mt-12">
+          <div>
+            <div class="stat-number">3<span class="text-brand">+</span></div>
+            <p class="text-xs text-slate-500 font-medium mt-1">Years Exp.</p>
+          </div>
+          <div class="w-px bg-border"></div>
+          <div>
+            <div class="stat-number">20<span class="text-brand">+</span></div>
+            <p class="text-xs text-slate-500 font-medium mt-1">Projects</p>
+          </div>
+          <div class="w-px bg-border"></div>
+          <div>
+            <div class="stat-number">10<span class="text-brand">+</span></div>
+            <p class="text-xs text-slate-500 font-medium mt-1">Clients</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- AVATAR + FLOATING ELEMENTS -->
+      <div class="relative flex items-center justify-center">
+        <!-- Rotating ring -->
+        <div class="absolute w-80 h-80 rounded-full border border-dashed border-brand opacity-15 animate-spin-slow"></div>
+        <div class="absolute w-64 h-64 rounded-full border border-brand opacity-10 animate-[spin_15s_linear_infinite_reverse]"></div>
+
+        <!-- Avatar placeholder -->
+        <div class="relative z-10 w-56 h-56 rounded-full overflow-hidden border-2 border-brand shadow-[0_0_60px_rgba(0,245,196,0.25)]">
+          <div class="w-full h-full bg-gradient-to-br from-slate-700 via-slate-800 to-card flex items-center justify-center">
+            <svg viewBox="0 0 200 200" class="w-full h-full" fill="none">
+              <circle cx="100" cy="80" r="40" fill="rgba(0,245,196,0.15)" stroke="rgba(0,245,196,0.3)" stroke-width="2"/>
+              <path d="M40 180 Q100 130 160 180" fill="rgba(0,245,196,0.1)" stroke="rgba(0,245,196,0.3)" stroke-width="2"/>
+              <circle cx="100" cy="78" r="26" fill="rgba(0,245,196,0.2)"/>
+              <circle cx="100" cy="68" r="14" fill="rgba(0,245,196,0.25)"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Floating badges -->
+        <div class="floating-badge absolute -top-4 -right-4 glass px-3 py-2 rounded-xl text-xs font-semibold text-brand border border-brand/20">
+          <span>🐍 Python Expert</span>
+        </div>
+        <div class="floating-badge absolute bottom-4 -left-8 glass px-3 py-2 rounded-xl text-xs font-semibold text-blue-400 border border-blue-400/20" style="animation-delay:1.5s;">
+          <span>🤖 RPA Dev</span>
+        </div>
+        <div class="floating-badge absolute top-16 -left-10 glass px-3 py-2 rounded-xl text-xs font-semibold text-pink-400 border border-pink-400/20" style="animation-delay:3s;">
+          <span>⚡ Automation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+      <span class="text-xs text-slate-500 tracking-widest font-medium">SCROLL</span>
+      <div class="w-px h-12 bg-gradient-to-b from-brand to-transparent animate-pulse"></div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about" class="relative py-28 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="section-label mb-12 reveal">whoami</div>
+
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <!-- Terminal window -->
+        <div class="glass rounded-2xl overflow-hidden reveal" style="transition-delay:0.1s;">
+          <div class="flex items-center gap-2 px-5 py-3 bg-white/[0.03] border-b border-white/5">
+            <span class="w-3 h-3 rounded-full bg-red-500 opacity-80"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500 opacity-80"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500 opacity-80"></span>
+            <span class="ml-4 text-xs text-slate-500 font-mono">shekhar@portfolio ~ cat about.txt</span>
+          </div>
+          <div class="p-6 font-mono text-sm leading-7">
+            <p class="text-brand">$ whoami</p>
+            <p class="text-slate-300 mt-2">→ Python Developer specializing in RPA & DevOps</p>
+            <p class="text-slate-300">→ Skilled in Django, FastAPI, Robocorp, Docker</p>
+            <p class="text-slate-300">→ Track record of building secure APIs</p>
+            <p class="text-slate-300">→ High-performance automation bots</p>
+            <br>
+            <p class="text-brand">$ current_employer</p>
+            <p class="text-slate-300 mt-2">→ <span class="text-white font-semibold">MetaCloud Solution Pvt Ltd</span></p>
+            <p class="text-slate-500">  Software Engineer, Kathmandu, Nepal</p>
+            <br>
+            <p class="text-brand">$ passion</p>
+            <p class="text-slate-300 mt-2">→ Clean code, system design, continuous improvement</p>
+            <span class="text-brand typewriter">_</span>
+          </div>
+        </div>
+
+        <!-- Text content -->
+        <div class="reveal" style="transition-delay:0.2s;">
+          <h2 class="text-4xl font-bold mb-6">
+            Building systems that <span class="grad-text">actually work</span>
+          </h2>
+          <p class="text-slate-400 leading-relaxed mb-6">
+            I'm a Python Developer and RPA specialist with a deep focus on automation and backend engineering. I thrive at the intersection of code quality and business impact — writing systems that scale, automate, and endure.
+          </p>
+          <p class="text-slate-400 leading-relaxed mb-8">
+            Currently at MetaCloud Solution, I architect automation pipelines that handle mission-critical banking workflows, bringing measurable efficiency gains through precise, robust engineering.
+          </p>
+
+          <div class="flex flex-wrap gap-3">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">Django</span>
+            <span class="skill-tag">FastAPI</span>
+            <span class="skill-tag">Robocorp</span>
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">RPA</span>
+            <span class="skill-tag">PostgreSQL</span>
+            <span class="skill-tag">CI/CD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TECH STACK ===================== -->
+  <section id="skills" class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-4">Arsenal</div>
+        <h2 class="text-4xl font-bold">Tech <span class="grad-text">Stack</span></h2>
+        <p class="text-slate-500 mt-3">Tools I wield in production</p>
+      </div>
+
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-5 reveal" style="transition-delay:0.1s;">
+        <div x-data x-init="$el.style.animationDelay = '0ms'"
+             class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.05s;">
+          <div class="tech-icon">🐍</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Python</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.1s;">
+          <div class="tech-icon">🌿</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Django</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.15s;">
+          <div class="tech-icon">⚡</div>
+          <span class="text-xs text-slate-400 font-medium text-center">FastAPI</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.2s;">
+          <div class="tech-icon">🤖</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Robocorp</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.25s;">
+          <div class="tech-icon">🐳</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Docker</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.3s;">
+          <div class="tech-icon">🔧</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Selenium</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.35s;">
+          <div class="tech-icon">🗄️</div>
+          <span class="text-xs text-slate-400 font-medium text-center">PostgreSQL</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.4s;">
+          <div class="tech-icon">🔴</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Redis</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.45s;">
+          <div class="tech-icon">📦</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Flask</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.5s;">
+          <div class="tech-icon">🔗</div>
+          <span class="text-xs text-slate-400 font-medium text-center">REST API</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.55s;">
+          <div class="tech-icon">🌊</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Celery</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.6s;">
+          <div class="tech-icon">🛠️</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Git</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.65s;">
+          <div class="tech-icon">☁️</div>
+          <span class="text-xs text-slate-400 font-medium text-center">AWS</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.7s;">
+          <div class="tech-icon">🔄</div>
+          <span class="text-xs text-slate-400 font-medium text-center">CI/CD</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.75s;">
+          <div class="tech-icon">🐧</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Linux</span>
+        </div>
+        <div class="flex flex-col items-center gap-3 reveal" style="transition-delay:0.8s;">
+          <div class="tech-icon">📊</div>
+          <span class="text-xs text-slate-400 font-medium text-center">Grafana</span>
+        </div>
+      </div>
+
+      <!-- Skill bars -->
+      <div class="mt-20 grid md:grid-cols-2 gap-8 reveal" style="transition-delay:0.2s;">
+        <template x-for="skill in skills" :key="skill.name">
+          <div>
+            <div class="flex justify-between mb-2">
+              <span class="text-sm font-medium text-slate-300" x-text="skill.name"></span>
+              <span class="text-sm font-semibold text-brand" x-text="skill.level + '%'"></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" :style="'width: ' + (barsVisible ? skill.level : 0) + '%'"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PROJECTS ===================== -->
+  <section id="projects" class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-4">Portfolio</div>
+        <h2 class="text-4xl font-bold">Production <span class="grad-text">Projects</span></h2>
+        <p class="text-slate-500 mt-3">Shipped, battle-tested, real-world impact</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-7">
+
+        <!-- Project 1 -->
+        <div class="glass rounded-2xl overflow-hidden project-card reveal" style="transition-delay:0s;">
+          <!-- Visual header -->
+          <div class="relative h-44 flex items-center justify-center overflow-hidden"
+               style="background: linear-gradient(135deg, #050f1f 0%, #0a2216 100%);">
+            <div class="absolute inset-0" style="background:radial-gradient(ellipse at 30% 50%, rgba(0,245,196,0.12) 0%, transparent 70%);"></div>
+            <div class="relative z-10 text-center">
+              <div class="text-6xl mb-2">🤖</div>
+              <div class="flex gap-2 justify-center flex-wrap">
+                <span class="text-xs font-bold tracking-widest text-brand/70 font-mono">PYTHON</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-brand/70 font-mono">RPA</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-brand/70 font-mono">DJANGO</span>
+              </div>
+            </div>
+            <!-- Metric badge -->
+            <div class="absolute top-4 right-4 glass px-2.5 py-1 rounded-full text-xs font-semibold text-green-400 border border-green-400/20 flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping absolute"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 relative"></span>
+              Live in Production
+            </div>
+          </div>
+          <!-- Card body -->
+          <div class="p-7">
+            <h3 class="text-xl font-bold text-white mb-2">Bot Management System</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-5">
+              Enterprise-grade platform to manage, schedule, and monitor RPA bots via a Django web interface. Supports real-time log streaming, execution history, and Slack alerting for banking-critical workflows.
+            </p>
+            <!-- Impact metrics -->
+            <div class="grid grid-cols-3 gap-4 mb-5 p-4 rounded-xl" style="background:rgba(0,245,196,0.04); border:1px solid rgba(0,245,196,0.08);">
+              <div class="text-center">
+                <p class="text-lg font-black text-brand">50+</p>
+                <p class="text-xs text-slate-500 mt-0.5">Bots Managed</p>
+              </div>
+              <div class="text-center border-x border-white/5">
+                <p class="text-lg font-black text-brand">99.9%</p>
+                <p class="text-xs text-slate-500 mt-0.5">Uptime SLA</p>
+              </div>
+              <div class="text-center">
+                <p class="text-lg font-black text-brand">70%</p>
+                <p class="text-xs text-slate-500 mt-0.5">Manual Reduction</p>
+              </div>
+            </div>
+            <!-- Tech stack -->
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="skill-tag text-xs">Python</span>
+              <span class="skill-tag text-xs">Robocorp</span>
+              <span class="skill-tag text-xs">Django</span>
+              <span class="skill-tag text-xs">Docker</span>
+              <span class="skill-tag text-xs">PostgreSQL</span>
+              <span class="skill-tag text-xs">Celery</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-600 font-mono">MetaCloud · Banking Domain</span>
+              <button class="flex items-center gap-2 text-brand text-sm font-semibold hover:gap-3 transition-all">
+                Case Study
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="glass rounded-2xl overflow-hidden project-card reveal" style="transition-delay:0.1s;">
+          <div class="relative h-44 flex items-center justify-center overflow-hidden"
+               style="background: linear-gradient(135deg, #050f1f 0%, #150a25 100%);">
+            <div class="absolute inset-0" style="background:radial-gradient(ellipse at 70% 50%, rgba(255,45,120,0.1) 0%, transparent 70%);"></div>
+            <div class="relative z-10 text-center">
+              <div class="text-6xl mb-2">🏺</div>
+              <div class="flex gap-2 justify-center flex-wrap">
+                <span class="text-xs font-bold tracking-widest text-pink-400/70 font-mono">LARAVEL</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-pink-400/70 font-mono">REACT</span>
+              </div>
+            </div>
+            <div class="absolute top-4 right-4 glass px-2.5 py-1 rounded-full text-xs font-semibold text-pink-400 border border-pink-400/20">
+              Flagship Product
+            </div>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold text-white mb-2">Sanima Auction Hub</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-5">
+              Full-featured digital auction platform for Sanima Bank's asset liquidation. Handles item registration, bidding sessions, winner notifications, and dealer management with role-based access.
+            </p>
+            <div class="grid grid-cols-3 gap-4 mb-5 p-4 rounded-xl" style="background:rgba(255,45,120,0.04); border:1px solid rgba(255,45,120,0.08);">
+              <div class="text-center">
+                <p class="text-lg font-black text-pink-400">500+</p>
+                <p class="text-xs text-slate-500 mt-0.5">Items Auctioned</p>
+              </div>
+              <div class="text-center border-x border-white/5">
+                <p class="text-lg font-black text-pink-400">200+</p>
+                <p class="text-xs text-slate-500 mt-0.5">Active Dealers</p>
+              </div>
+              <div class="text-center">
+                <p class="text-lg font-black text-pink-400">3x</p>
+                <p class="text-xs text-slate-500 mt-0.5">Process Speed</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">Laravel</span>
+              <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">React</span>
+              <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">MySQL</span>
+              <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">REST API</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-600 font-mono">Sanima Bank · FinTech</span>
+              <button class="flex items-center gap-2 text-pink-400 text-sm font-semibold hover:gap-3 transition-all">
+                Case Study
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="glass rounded-2xl overflow-hidden project-card reveal" style="transition-delay:0.2s;">
+          <div class="relative h-44 flex items-center justify-center overflow-hidden"
+               style="background: linear-gradient(135deg, #050f1f 0%, #0a1525 100%);">
+            <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 50%, rgba(0,180,216,0.12) 0%, transparent 70%);"></div>
+            <div class="relative z-10 text-center">
+              <div class="text-6xl mb-2">💳</div>
+              <div class="flex gap-2 justify-center flex-wrap">
+                <span class="text-xs font-bold tracking-widest text-blue-400/70 font-mono">SELENIUM</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-blue-400/70 font-mono">TTS</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-blue-400/70 font-mono">SMS GATEWAY</span>
+              </div>
+            </div>
+            <div class="absolute top-4 right-4 glass px-2.5 py-1 rounded-full text-xs font-semibold text-blue-400 border border-blue-400/20">
+              Automation
+            </div>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold text-white mb-2">Card Service Automation</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-5">
+              End-to-end automation of debit/credit card activation and renewal using Selenium web scraping, Text-to-Speech (TTS) IVR calls, and NepSMS gateway. Fully compliant with banking security protocols.
+            </p>
+            <div class="grid grid-cols-3 gap-4 mb-5 p-4 rounded-xl" style="background:rgba(0,180,216,0.04); border:1px solid rgba(0,180,216,0.1);">
+              <div class="text-center">
+                <p class="text-lg font-black text-blue-400">1000+</p>
+                <p class="text-xs text-slate-500 mt-0.5">Cards / Day</p>
+              </div>
+              <div class="text-center border-x border-white/5">
+                <p class="text-lg font-black text-blue-400">70%</p>
+                <p class="text-xs text-slate-500 mt-0.5">Cost Saved</p>
+              </div>
+              <div class="text-center">
+                <p class="text-lg font-black text-blue-400">0</p>
+                <p class="text-xs text-slate-500 mt-0.5">Manual Errors</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">Python</span>
+              <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">Selenium</span>
+              <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">NepSMS API</span>
+              <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">TTS</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-600 font-mono">Sanima Bank · Banking Ops</span>
+              <button class="flex items-center gap-2 text-blue-400 text-sm font-semibold hover:gap-3 transition-all">
+                Case Study
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="glass rounded-2xl overflow-hidden project-card reveal" style="transition-delay:0.3s;">
+          <div class="relative h-44 flex items-center justify-center overflow-hidden"
+               style="background: linear-gradient(135deg, #050f1f 0%, #0f1a0a 100%);">
+            <div class="absolute inset-0" style="background:radial-gradient(ellipse at 40% 60%, rgba(132,204,22,0.1) 0%, transparent 70%);"></div>
+            <div class="relative z-10 text-center">
+              <div class="text-6xl mb-2">🌐</div>
+              <div class="flex gap-2 justify-center flex-wrap">
+                <span class="text-xs font-bold tracking-widest text-lime-400/70 font-mono">NETMIKO</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-lime-400/70 font-mono">SNMP</span>
+                <span class="text-slate-600">·</span>
+                <span class="text-xs font-bold tracking-widest text-lime-400/70 font-mono">DJANGO</span>
+              </div>
+            </div>
+            <div class="absolute top-4 right-4 glass px-2.5 py-1 rounded-full text-xs font-semibold text-lime-400 border border-lime-400/20">
+              Infrastructure
+            </div>
+          </div>
+          <div class="p-7">
+            <h3 class="text-xl font-bold text-white mb-2">Network Automation Tool</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-5">
+              Django-based network ops tool that auto-acknowledges SNMP traps using Netmiko SSH sessions. Integrates with existing NMS platforms, reducing NOC manual intervention and MTTD across multi-vendor environments.
+            </p>
+            <div class="grid grid-cols-3 gap-4 mb-5 p-4 rounded-xl" style="background:rgba(132,204,22,0.04); border:1px solid rgba(132,204,22,0.1);">
+              <div class="text-center">
+                <p class="text-lg font-black text-lime-400">100+</p>
+                <p class="text-xs text-slate-500 mt-0.5">Network Devices</p>
+              </div>
+              <div class="text-center border-x border-white/5">
+                <p class="text-lg font-black text-lime-400">5 min</p>
+                <p class="text-xs text-slate-500 mt-0.5">MTTD Reduced</p>
+              </div>
+              <div class="text-center">
+                <p class="text-lg font-black text-lime-400">24/7</p>
+                <p class="text-xs text-slate-500 mt-0.5">Monitoring</p>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-5">
+              <span class="skill-tag text-xs" style="color:#a3e635; border-color:rgba(163,230,53,0.3); background:rgba(163,230,53,0.08);">Django</span>
+              <span class="skill-tag text-xs" style="color:#a3e635; border-color:rgba(163,230,53,0.3); background:rgba(163,230,53,0.08);">Netmiko</span>
+              <span class="skill-tag text-xs" style="color:#a3e635; border-color:rgba(163,230,53,0.3); background:rgba(163,230,53,0.08);">SNMP</span>
+              <span class="skill-tag text-xs" style="color:#a3e635; border-color:rgba(163,230,53,0.3); background:rgba(163,230,53,0.08);">PostgreSQL</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-600 font-mono">Internal Tool · NetOps</span>
+              <button class="flex items-center gap-2 text-lime-400 text-sm font-semibold hover:gap-3 transition-all">
+                Case Study
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 5 — Full width -->
+        <div class="glass rounded-2xl overflow-hidden project-card reveal md:col-span-2" style="transition-delay:0.4s;">
+          <div class="grid md:grid-cols-2 gap-0">
+            <!-- Visual -->
+            <div class="relative h-56 md:h-auto flex items-center justify-center overflow-hidden"
+                 style="background: linear-gradient(135deg, #050f1f 0%, #0f0520 100%);">
+              <div class="absolute inset-0" style="background:radial-gradient(ellipse at 60% 40%, rgba(139,92,246,0.15) 0%, transparent 70%);"></div>
+              <div class="relative z-10 text-center p-10">
+                <div class="text-7xl mb-3">🚀</div>
+                <div class="flex gap-2 justify-center flex-wrap">
+                  <span class="text-xs font-bold tracking-widest text-violet-400/70 font-mono">FASTAPI</span>
+                  <span class="text-slate-600">·</span>
+                  <span class="text-xs font-bold tracking-widest text-violet-400/70 font-mono">MICROSERVICES</span>
+                </div>
+                <!-- Floating metrics -->
+                <div class="mt-6 grid grid-cols-3 gap-3">
+                  <div class="glass rounded-xl p-3" style="border-color:rgba(139,92,246,0.2);">
+                    <p class="text-base font-black text-violet-400">10K+</p>
+                    <p class="text-xs text-slate-500">Req/min</p>
+                  </div>
+                  <div class="glass rounded-xl p-3" style="border-color:rgba(139,92,246,0.2);">
+                    <p class="text-base font-black text-violet-400">&lt;50ms</p>
+                    <p class="text-xs text-slate-500">Avg Latency</p>
+                  </div>
+                  <div class="glass rounded-xl p-3" style="border-color:rgba(139,92,246,0.2);">
+                    <p class="text-base font-black text-violet-400">99.8%</p>
+                    <p class="text-xs text-slate-500">Uptime</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Content -->
+            <div class="p-8 flex flex-col justify-center">
+              <div class="inline-flex items-center gap-2 text-xs font-semibold text-violet-400 mb-4 font-mono tracking-wider">
+                <span class="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse"></span>
+                FEATURED PROJECT
+              </div>
+              <h3 class="text-2xl font-bold text-white mb-3">Banking API Gateway</h3>
+              <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                High-throughput FastAPI microservice gateway serving as the backbone for banking operations. Handles authentication, rate limiting, request routing, and audit logging across multiple downstream services with JWT + OAuth2.
+              </p>
+              <div class="space-y-2 mb-6">
+                <div class="flex items-center gap-3 text-sm text-slate-400">
+                  <span class="text-brand text-xs">✓</span> JWT + OAuth2 authentication layer
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-400">
+                  <span class="text-brand text-xs">✓</span> Redis-backed rate limiting & caching
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-400">
+                  <span class="text-brand text-xs">✓</span> Full audit trail with structured logging
+                </div>
+                <div class="flex items-center gap-3 text-sm text-slate-400">
+                  <span class="text-brand text-xs">✓</span> Kubernetes-ready Docker deployment
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 mb-6">
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">FastAPI</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">Redis</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">PostgreSQL</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">Docker</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">JWT</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">K8s</span>
+              </div>
+              <div class="flex gap-3">
+                <button class="btn-primary text-sm px-5 py-2.5" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">
+                  <span>View Case Study</span>
+                </button>
+                <button class="btn-outline text-sm px-5 py-2.5" style="color:#a78bfa; border-color:rgba(167,139,250,0.4);">
+                  GitHub ↗
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WORK HISTORY ===================== -->
+  <section id="career" class="relative py-24 px-6">
+    <!-- Subtle glow -->
+    <div class="glow-blob w-[500px] h-[500px] bg-brand" style="top:40%;right:-15%;opacity:0.06;"></div>
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <div class="section-label mb-4">Journey</div>
+        <h2 class="text-4xl font-bold">Work <span class="grad-text">History</span></h2>
+        <p class="text-slate-500 mt-3 font-mono text-sm">$ cat career_logs.txt | grep -i experience</p>
+      </div>
+
+      <!-- Timeline wrapper -->
+      <div class="relative">
+        <!-- Vertical line -->
+        <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2"
+             style="background:linear-gradient(to bottom, transparent, rgba(0,245,196,0.4) 15%, rgba(0,245,196,0.4) 85%, transparent);"></div>
+
+        <!-- ── JOB 1 ── -->
+        <div class="relative mb-12 reveal" style="transition-delay:0s;">
+          <!-- Center dot (desktop) -->
+          <div class="hidden md:flex absolute left-1/2 top-8 -translate-x-1/2 w-5 h-5 rounded-full bg-brand border-4 border-dark z-10 items-center justify-center"
+               style="box-shadow:0 0 16px rgba(0,245,196,0.6);"></div>
+
+          <div class="md:grid md:grid-cols-2 md:gap-12 items-start">
+            <!-- Left: Company info -->
+            <div class="md:text-right mb-4 md:mb-0 md:pt-6">
+              <div class="inline-flex md:flex-row-reverse items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                     style="background:rgba(0,245,196,0.1); border:1px solid rgba(0,245,196,0.2);">🏢</div>
+                <span class="text-xs font-mono font-bold tracking-widest text-brand/60">2023 — PRESENT</span>
+              </div>
+              <h3 class="text-xl font-black text-white">Software Engineer</h3>
+              <p class="text-brand font-semibold text-sm mt-1">MetaCloud Solution Pvt Ltd</p>
+              <p class="text-slate-500 text-xs mt-1">Kathmandu, Nepal · Full-time</p>
+              <!-- Current badge -->
+              <div class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold text-green-400"
+                   style="background:rgba(34,197,94,0.1); border:1px solid rgba(34,197,94,0.2);">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-ping absolute"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 relative"></span>
+                Current Role
+              </div>
+            </div>
+            <!-- Right: Details card -->
+            <div class="glass rounded-2xl p-6 md:pt-6">
+              <p class="text-slate-400 text-sm leading-relaxed mb-5">
+                Leading automation initiatives and backend development for banking clients. Architect and deploy RPA pipelines that handle mission-critical workflows at scale.
+              </p>
+              <!-- Key achievements -->
+              <div class="space-y-3 mb-5">
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md bg-brand/10 border border-brand/20 flex items-center justify-center text-xs text-brand flex-shrink-0">→</span>
+                  <p class="text-sm text-slate-300">Architected 50+ production RPA bots using Robocorp, reducing manual banking operations by <span class="text-brand font-semibold">70%</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md bg-brand/10 border border-brand/20 flex items-center justify-center text-xs text-brand flex-shrink-0">→</span>
+                  <p class="text-sm text-slate-300">Designed Django-based Bot Management System with real-time log streaming and Slack alerting</p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md bg-brand/10 border border-brand/20 flex items-center justify-center text-xs text-brand flex-shrink-0">→</span>
+                  <p class="text-sm text-slate-300">Deployed microservices via Docker Compose & CI/CD pipelines with <span class="text-brand font-semibold">99.9% uptime SLA</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md bg-brand/10 border border-brand/20 flex items-center justify-center text-xs text-brand flex-shrink-0">→</span>
+                  <p class="text-sm text-slate-300">Built high-throughput FastAPI gateways serving <span class="text-brand font-semibold">10K+ req/min</span> with &lt;50ms latency</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+                <span class="skill-tag text-xs">Python</span>
+                <span class="skill-tag text-xs">Robocorp</span>
+                <span class="skill-tag text-xs">Django</span>
+                <span class="skill-tag text-xs">FastAPI</span>
+                <span class="skill-tag text-xs">Docker</span>
+                <span class="skill-tag text-xs">PostgreSQL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── JOB 2 ── -->
+        <div class="relative mb-12 reveal" style="transition-delay:0.15s;">
+          <div class="hidden md:flex absolute left-1/2 top-8 -translate-x-1/2 w-5 h-5 rounded-full border-4 border-dark z-10"
+               style="background:#FF2D78; box-shadow:0 0 16px rgba(255,45,120,0.5);"></div>
+
+          <div class="md:grid md:grid-cols-2 md:gap-12 items-start">
+            <!-- Right side (empty on desktop, shows on mobile) -->
+            <div class="hidden md:block"></div>
+            <!-- Left: card (right side on desktop grid) -->
+            <div class="glass rounded-2xl p-6">
+              <div class="flex items-center gap-3 mb-4 md:hidden">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                     style="background:rgba(255,45,120,0.1); border:1px solid rgba(255,45,120,0.2);">🏦</div>
+                <div>
+                  <h3 class="text-lg font-black text-white">RPA / Web Developer</h3>
+                  <p class="text-pink-400 font-semibold text-sm">Sanima Bank Limited</p>
+                </div>
+              </div>
+              <!-- Desktop header inside card -->
+              <div class="hidden md:flex items-start justify-between mb-4">
+                <div>
+                  <div class="flex items-center gap-3 mb-1">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+                         style="background:rgba(255,45,120,0.1); border:1px solid rgba(255,45,120,0.2);">🏦</div>
+                    <h3 class="text-lg font-black text-white">RPA / Web Developer</h3>
+                  </div>
+                  <p class="text-pink-400 font-semibold text-sm ml-12">Sanima Bank Limited</p>
+                  <p class="text-slate-500 text-xs mt-1 ml-12">Kathmandu, Nepal · 1 yr</p>
+                </div>
+                <span class="text-xs font-mono font-bold tracking-widest text-pink-400/60 whitespace-nowrap">2022 — 2023</span>
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed mb-5">
+                Built and maintained production RPA workflows and internal web tools for Nepal's leading private bank, improving operational efficiency across card services and network operations.
+              </p>
+              <div class="space-y-3 mb-5">
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(255,45,120,0.1); border:1px solid rgba(255,45,120,0.2); color:#FF2D78;">→</span>
+                  <p class="text-sm text-slate-300">Automated card activation/renewal with Selenium + TTS, processing <span class="text-pink-400 font-semibold">1000+ cards/day</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(255,45,120,0.1); border:1px solid rgba(255,45,120,0.2); color:#FF2D78;">→</span>
+                  <p class="text-sm text-slate-300">Developed Sanima Auction Hub with Laravel + React, onboarding <span class="text-pink-400 font-semibold">200+ dealers</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(255,45,120,0.1); border:1px solid rgba(255,45,120,0.2); color:#FF2D78;">→</span>
+                  <p class="text-sm text-slate-300">Built Django SNMP network tool monitoring <span class="text-pink-400 font-semibold">100+ network devices</span> across branches</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+                <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">Python</span>
+                <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">Selenium</span>
+                <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">Laravel</span>
+                <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">React</span>
+                <span class="skill-tag text-xs" style="color:#FF2D78; border-color:rgba(255,45,120,0.3); background:rgba(255,45,120,0.08);">Netmiko</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop: Company label on LEFT side (shown via absolute positioning) -->
+          <div class="hidden md:block absolute left-0 top-6 w-[calc(50%-3rem)] text-right pr-2">
+            <span class="text-xs font-mono font-bold tracking-widest text-pink-400/60">2022 — 2023</span>
+            <h3 class="text-lg font-black text-white mt-1">RPA / Web Developer</h3>
+            <p class="text-pink-400 font-semibold text-sm">Sanima Bank Limited</p>
+            <p class="text-slate-500 text-xs mt-1">Kathmandu, Nepal · 1 yr</p>
+          </div>
+        </div>
+
+        <!-- ── JOB 3 ── -->
+        <div class="relative mb-12 reveal" style="transition-delay:0.3s;">
+          <div class="hidden md:flex absolute left-1/2 top-8 -translate-x-1/2 w-5 h-5 rounded-full border-4 border-dark z-10"
+               style="background:#60a5fa; box-shadow:0 0 16px rgba(96,165,250,0.5);"></div>
+
+          <div class="md:grid md:grid-cols-2 md:gap-12 items-start">
+            <!-- Left: Company info -->
+            <div class="md:text-right mb-4 md:mb-0 md:pt-6">
+              <div class="inline-flex md:flex-row-reverse items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
+                     style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2);">💡</div>
+                <span class="text-xs font-mono font-bold tracking-widest text-blue-400/60">2021 — 2022</span>
+              </div>
+              <h3 class="text-xl font-black text-white">Junior Web Developer</h3>
+              <p class="text-blue-400 font-semibold text-sm mt-1">Kelbit Digital Limited</p>
+              <p class="text-slate-500 text-xs mt-1">Kathmandu, Nepal · 1 yr</p>
+            </div>
+            <!-- Right: Details card -->
+            <div class="glass rounded-2xl p-6">
+              <p class="text-slate-400 text-sm leading-relaxed mb-5">
+                Developed client-facing web applications and contributed to REST API integrations. Collaborated with cross-functional teams on frontend integrations and CI/CD workflow improvements.
+              </p>
+              <div class="space-y-3 mb-5">
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); color:#60a5fa;">→</span>
+                  <p class="text-sm text-slate-300">Built and shipped <span class="text-blue-400 font-semibold">5+ client web apps</span> with Django and vanilla JS from scratch</p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); color:#60a5fa;">→</span>
+                  <p class="text-sm text-slate-300">Integrated third-party payment gateways and RESTful APIs for e-commerce clients</p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.2); color:#60a5fa;">→</span>
+                  <p class="text-sm text-slate-300">Set up GitHub Actions CI/CD pipelines, cutting deployment time by <span class="text-blue-400 font-semibold">60%</span></p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+                <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">Django</span>
+                <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">REST API</span>
+                <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">JavaScript</span>
+                <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">GitHub Actions</span>
+                <span class="skill-tag text-xs" style="color:#60a5fa; border-color:rgba(96,165,250,0.3); background:rgba(96,165,250,0.08);">MySQL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── JOB 4 (Internship) ── -->
+        <div class="relative reveal" style="transition-delay:0.45s;">
+          <div class="hidden md:flex absolute left-1/2 top-8 -translate-x-1/2 w-5 h-5 rounded-full border-4 border-dark z-10"
+               style="background:#a78bfa; box-shadow:0 0 16px rgba(167,139,250,0.5);"></div>
+
+          <div class="md:grid md:grid-cols-2 md:gap-12 items-start">
+            <div class="hidden md:block"></div>
+            <!-- Card -->
+            <div class="glass rounded-2xl p-6" style="border-color:rgba(167,139,250,0.15);">
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+                       style="background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.2);">🎓</div>
+                  <div>
+                    <h3 class="text-lg font-black text-white">Python Developer</h3>
+                    <p class="text-violet-400 font-semibold text-sm">IT Company (Internship)</p>
+                    <p class="text-slate-500 text-xs mt-0.5">Kathmandu, Nepal · 6 months</p>
+                  </div>
+                </div>
+                <span class="text-xs font-mono font-bold tracking-widest text-violet-400/60 whitespace-nowrap">2021</span>
+              </div>
+              <p class="text-slate-400 text-sm leading-relaxed mb-5">
+                First industry exposure building Python microservices and automation scripts. Gained hands-on experience with agile sprints, code reviews, and production-grade system workflows.
+              </p>
+              <div class="space-y-3 mb-5">
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.2); color:#a78bfa;">→</span>
+                  <p class="text-sm text-slate-300">Wrote Python scripts automating repetitive data pipeline tasks</p>
+                </div>
+                <div class="flex items-start gap-3">
+                  <span class="mt-1 w-5 h-5 rounded-md flex items-center justify-center text-xs flex-shrink-0"
+                        style="background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.2); color:#a78bfa;">→</span>
+                  <p class="text-sm text-slate-300">Contributed to Flask microservices and participated in agile sprint cycles</p>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-2 pt-4 border-t border-white/5">
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">Python</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">Flask</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">SQL</span>
+                <span class="skill-tag text-xs" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">Git</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Desktop: Company label LEFT -->
+          <div class="hidden md:block absolute left-0 top-6 w-[calc(50%-3rem)] text-right pr-2">
+            <span class="text-xs font-mono font-bold tracking-widest text-violet-400/60">2021</span>
+            <h3 class="text-lg font-black text-white mt-1">Python Developer</h3>
+            <p class="text-violet-400 font-semibold text-sm">IT Company (Internship)</p>
+            <p class="text-slate-500 text-xs mt-1">Kathmandu, Nepal · 6 months</p>
+          </div>
+        </div>
+
+      </div><!-- /timeline -->
+    </div>
+  </section>
+
+  <!-- ===================== EDUCATION & CERTS ===================== -->
+  <section class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
+      <!-- Education -->
+      <div class="reveal">
+        <div class="section-label mb-8">🎓 Education</div>
+        <div class="glass rounded-2xl p-7">
+          <div class="flex items-start gap-5">
+            <div class="w-12 h-12 rounded-xl bg-brand/10 border border-brand/20 flex items-center justify-center text-2xl flex-shrink-0">🏛️</div>
+            <div>
+              <h3 class="text-lg font-bold text-white">Bachelor in Computer Science</h3>
+              <p class="text-brand text-sm font-semibold mt-1">Pokhara University</p>
+              <p class="text-slate-500 text-sm mt-1">2018 – 2022 · Nepal</p>
+              <p class="text-slate-400 text-sm mt-3 leading-relaxed">Strong foundation in algorithms, data structures, software engineering principles, and system design.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Certifications -->
+      <div class="reveal" style="transition-delay:0.1s;">
+        <div class="section-label mb-8">🏆 Certifications</div>
+        <div class="flex flex-col gap-4">
+          <template x-for="cert in certs" :key="cert.name">
+            <div class="glass rounded-xl px-5 py-4 flex items-center gap-4 group cursor-default"
+                 style="transition: all 0.3s ease;">
+              <div class="w-9 h-9 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-lg flex-shrink-0"
+                   x-text="cert.icon"></div>
+              <div class="flex-1">
+                <p class="text-sm font-semibold text-slate-200" x-text="cert.name"></p>
+                <p class="text-xs text-slate-500 mt-0.5" x-text="cert.org"></p>
+              </div>
+              <div class="w-8 h-8 rounded-full border border-brand/20 flex items-center justify-center text-brand opacity-0 group-hover:opacity-100 transition-opacity">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== BLOG ===================== -->
+  <section class="relative py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-12 reveal">
+        <div>
+          <div class="section-label mb-3 text-left" style="justify-content:flex-start;">Latest from the Blog</div>
+          <h2 class="text-3xl font-bold">Thoughts & <span class="grad-text">Guides</span></h2>
+        </div>
+        <a href="#" class="btn-outline text-sm px-5 py-2.5">View All →</a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="glass rounded-2xl overflow-hidden blog-card reveal">
+          <div class="blog-thumb flex items-center justify-center" style="background:linear-gradient(135deg,#0C1120 0%, #1a3a2a 100%);">
+            <div class="text-center p-6">
+              <div class="text-5xl mb-3">🐳</div>
+              <span class="text-xs text-brand font-mono font-bold tracking-wider">DOCKER · DJANGO</span>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-xs text-slate-500 mb-3 font-mono">APR 2024</p>
+            <h3 class="text-base font-bold text-white mb-2 leading-tight">Deploying Django with Docker: Complete Production Setup Guide</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">A full walkthrough of containerizing Django with multi-stage builds and production-ready configurations.</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl overflow-hidden blog-card reveal" style="transition-delay:0.1s;">
+          <div class="blog-thumb flex items-center justify-center" style="background:linear-gradient(135deg,#0C1120 0%, #1a2a3a 100%);">
+            <div class="text-center p-6">
+              <div class="text-5xl mb-3">⚙️</div>
+              <span class="text-xs text-brand font-mono font-bold tracking-wider">RPA · PYTHON</span>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-xs text-slate-500 mb-3 font-mono">MAR 2024</p>
+            <h3 class="text-base font-bold text-white mb-2 leading-tight">Building Scalable RPA Bots with Robocorp & Python</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Deep dive into architecting automation solutions that handle banking-scale workloads reliably.</p>
+          </div>
+        </div>
+
+        <div class="glass rounded-2xl overflow-hidden blog-card reveal" style="transition-delay:0.2s;">
+          <div class="blog-thumb flex items-center justify-center" style="background:linear-gradient(135deg,#0C1120 0%, #2a1a3a 100%);">
+            <div class="text-center p-6">
+              <div class="text-5xl mb-3">🔗</div>
+              <span class="text-xs text-brand font-mono font-bold tracking-wider">API · FASTAPI</span>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-xs text-slate-500 mb-3 font-mono">FEB 2024</p>
+            <h3 class="text-base font-bold text-white mb-2 leading-tight">FastAPI Best Practices for High-Performance REST APIs</h3>
+            <p class="text-sm text-slate-400 leading-relaxed">Patterns and anti-patterns learned from building production APIs that serve thousands of requests.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" class="relative py-24 px-6">
+    <div class="max-w-4xl mx-auto">
+      <!-- Glow blob -->
+      <div class="glow-blob w-96 h-96 bg-brand" style="top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.08;"></div>
+
+      <div class="text-center mb-12 reveal relative z-10">
+        <div class="section-label mb-4">Let's Build</div>
+        <h2 class="text-5xl font-black mb-4">
+          Initialize<br><span class="grad-text">Connection</span>
+        </h2>
+        <p class="text-slate-400 text-lg">Open to new roles, freelance projects, and collaborations.</p>
+      </div>
+
+      <div class="glass rounded-3xl p-8 md:p-12 reveal relative z-10" style="transition-delay:0.1s;">
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Name</label>
+            <input type="text" placeholder="Your full name" class="form-input" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-2">Email</label>
+            <input type="email" placeholder="hello@company.com" class="form-input" />
+          </div>
+        </div>
+        <div class="mb-8">
+          <label class="block text-sm font-semibold text-slate-300 mb-2">Subject</label>
+          <input type="text" placeholder="Project Inquiry / Job Opportunity / Collaboration" class="form-input" />
+        </div>
+        <div class="mb-8">
+          <label class="block text-sm font-semibold text-slate-300 mb-2">Message</label>
+          <textarea rows="5" placeholder="Tell me about your project or opportunity..." class="form-input resize-none"></textarea>
+        </div>
+        <button class="btn-primary w-full text-base" style="border-radius:14px; padding:16px;">
+          <span>🚀 Send Message</span>
+        </button>
+
+        <!-- Contact info -->
+        <div class="mt-10 pt-8 border-t border-white/5 flex flex-wrap justify-center gap-8">
+          <a href="mailto:shekhardhakal@gmail.com" class="flex items-center gap-3 text-slate-400 hover:text-brand transition-colors text-sm">
+            <div class="w-9 h-9 rounded-xl bg-brand/10 border border-brand/15 flex items-center justify-center">📧</div>
+            shekhardhakal@gmail.com
+          </a>
+          <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-brand transition-colors text-sm">
+            <div class="w-9 h-9 rounded-xl bg-brand/10 border border-brand/15 flex items-center justify-center">💼</div>
+            LinkedIn
+          </a>
+          <a href="#" class="flex items-center gap-3 text-slate-400 hover:text-brand transition-colors text-sm">
+            <div class="w-9 h-9 rounded-xl bg-brand/10 border border-brand/15 flex items-center justify-center">🐙</div>
+            GitHub
+          </a>
+          <div class="flex items-center gap-3 text-slate-400 text-sm">
+            <div class="w-9 h-9 rounded-xl bg-brand/10 border border-brand/15 flex items-center justify-center">📍</div>
+            Kathmandu, Nepal
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="relative border-t border-border py-10 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <p class="text-sm text-slate-600 font-mono">
+        © 2024 <span class="text-brand">Shekhar Dhakal</span> · Built with ❤️ & Python
+      </p>
+      <!-- Newsletter -->
+      <div class="flex items-center gap-3">
+        <input type="email" placeholder="Subscribe to newsletter" class="form-input text-sm" style="width:200px; padding:10px 14px;" />
+        <button class="btn-primary text-sm px-5 py-2.5"><span>Subscribe</span></button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== ALPINE APP ===================== -->
+  <script>
+    function app() {
+      return {
+        roleIndex: 0,
+        roles: ['Python Developer', 'RPA Engineer', 'DevOps Enthusiast', 'Backend Architect'],
+        barsVisible: false,
+        skills: [
+          { name: 'Python / Django / FastAPI', level: 92 },
+          { name: 'RPA & Automation (Robocorp)', level: 88 },
+          { name: 'Docker & DevOps', level: 82 },
+          { name: 'Database Design', level: 80 },
+          { name: 'API Development', level: 90 },
+          { name: 'Linux / System Admin', level: 78 },
+        ],
+        projects: [
+          {
+            icon: '🤖',
+            title: 'Bot Management System',
+            tags: ['Python', 'RPA'],
+            desc: 'Manage and schedule bots via a clean Django web interface, supporting manual execution and real-time log feeds. Reliable mission-critical banking automation.',
+          },
+          {
+            icon: '🏺',
+            title: 'Sanima Auction Hub',
+            tags: ['Laravel', 'React'],
+            desc: 'Designed a scalable auction platform using Laravel and React, delivering comprehensive item management and streamlined dealer overview.',
+          },
+          {
+            icon: '💳',
+            title: 'Card Service Automation',
+            tags: ['Selenium', 'TTS'],
+            desc: 'Automated card/renewal activations using Selenium, TTS, and NepSMS. Reduced manual effort and ensured compliance with security protocols.',
+          },
+          {
+            icon: '🌐',
+            title: 'Network Automation Tool',
+            tags: ['Netmiko', 'SNMP'],
+            desc: 'Created a Django tool to auto-acknowledge SNMP alerts using Netmiko. Enables real-time network monitoring with seamless tool integration.',
+          },
+        ],
+        career: [
+          {
+            title: 'Software Engineer',
+            company: 'MetaCloud Solution Pvt Ltd',
+            period: '2023 — PRESENT',
+            desc: 'Leading automation initiatives using Python, Robocorp, and Docker. Designing and deploying RPA pipelines and consumer-facing Django APIs for high-performance banking automation.',
+          },
+          {
+            title: 'RPA/Web Developer',
+            company: 'Sanima Bank Limited',
+            period: '2022 — 2023',
+            desc: 'Built production RPA workflows improving operational efficiency. Deployed automation reducing manual card service processing by 70%. Maintained Django-based internal tools.',
+          },
+          {
+            title: 'Junior Web Developer',
+            company: 'Kelbit Digital Limited',
+            period: '2021 — 2022',
+            desc: 'Developed client-facing web apps using Django and REST APIs. Worked closely with cross-functional teams on frontend integrations and CI/CD deployments.',
+          },
+          {
+            title: 'Python Developer (Intern)',
+            company: 'IT Company',
+            period: '2021',
+            desc: 'Contributed to building Python microservices and automation scripts. Gained hands-on exposure to agile methodologies and production-grade systems.',
+          },
+        ],
+        certs: [
+          { icon: '🐍', name: 'Python and Django', org: 'Udemy · 2023' },
+          { icon: '📊', name: 'Data Science & ML', org: 'Coursera · 2022' },
+          { icon: '🤖', name: 'DevOps Certification', org: 'Linux Foundation · 2023' },
+          { icon: '☁️', name: 'AWS Cloud Practitioner', org: 'Amazon · 2024' },
+        ],
+        init() {
+          // Role rotator
+          setInterval(() => {
+            this.roleIndex = (this.roleIndex + 1) % this.roles.length;
+          }, 2500);
+
+          // Scroll reveal
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                if (e.target.closest('#skills')) this.barsVisible = true;
+                observer.unobserve(e.target);
+              }
+            });
+          }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+          document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+          // Cursor glow
+          const cursor = document.getElementById('cursor-glow');
+          document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+          });
+
+          // Particles
+          this.initParticles();
+        },
+
+        initParticles() {
+          const canvas = document.getElementById('particles');
+          const ctx = canvas.getContext('2d');
+          let w, h, particles = [];
+
+          function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+          }
+          resize();
+          window.addEventListener('resize', resize);
+
+          class Particle {
+            constructor() { this.reset(); }
+            reset() {
+              this.x = Math.random() * w;
+              this.y = Math.random() * h;
+              this.r = Math.random() * 1.5 + 0.3;
+              this.vx = (Math.random() - 0.5) * 0.3;
+              this.vy = (Math.random() - 0.5) * 0.3;
+              this.alpha = Math.random() * 0.5 + 0.1;
+              this.color = Math.random() > 0.7 ? '#FF2D78' : '#00F5C4';
+            }
+            update() {
+              this.x += this.vx;
+              this.y += this.vy;
+              if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset();
+            }
+            draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+              ctx.fillStyle = this.color + Math.round(this.alpha * 255).toString(16).padStart(2, '0');
+              ctx.fill();
+            }
+          }
+
+          for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+          // Draw connections
+          function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                  ctx.beginPath();
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.strokeStyle = `rgba(0,245,196,${0.06 * (1 - dist / 100)})`;
+                  ctx.lineWidth = 0.5;
+                  ctx.stroke();
+                }
+              }
+            }
+          }
+
+          function animate() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawLines();
+            requestAnimationFrame(animate);
+          }
+          animate();
+        }
+      }
+    }
+  </script>
+</body>
+</html>

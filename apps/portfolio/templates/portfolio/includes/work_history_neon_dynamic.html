@@ -1,0 +1,18 @@
+      {% if experiences %}
+      <div class="max-w-3xl mx-auto space-y-6">
+        {% for exp in experiences %}
+        <div class="glass rounded-2xl p-6 md:p-7 reveal border border-white/5">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+            <div>
+              <h3 class="text-xl font-black text-white">{{ exp.role }}</h3>
+              <p class="text-brand text-sm font-semibold mt-1">{{ exp.company }}</p>
+            </div>
+            <span class="text-xs font-mono font-bold tracking-widest text-slate-500 whitespace-nowrap">{{ exp.duration }}</span>
+          </div>
+          <div class="text-slate-400 text-sm leading-relaxed border-t border-white/5 pt-4">{{ exp.description|linebreaks }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      {% include "portfolio/includes/work_history_neon_default.html" %}
+      {% endif %}

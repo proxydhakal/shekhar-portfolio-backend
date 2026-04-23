@@ -42,6 +42,18 @@ DEFAULT_SKILL_ICON = "fa-solid fa-code"
 
 
 @register.filter
+def split_stack(value):
+    """Split project tech_stack by comma, semicolon, or whitespace into a list of tags."""
+    if not value:
+        return []
+    s = str(value).strip()
+    for sep in (",", ";", "|"):
+        if sep in s:
+            return [p.strip() for p in s.split(sep) if p.strip()]
+    return [p.strip() for p in s.split() if p.strip()]
+
+
+@register.filter
 def skill_fa_icon(skill):
     """Return Font Awesome icon class for a skill. Uses icon_class if it's a FA class, else mapping or default."""
     if skill.icon_class and "fa-" in skill.icon_class:

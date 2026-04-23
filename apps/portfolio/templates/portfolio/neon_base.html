@@ -1,0 +1,357 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" x-data="app()" x-init="init()">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>{% block title %}{{ site_config.meta_title|default:"Shekhar Dhakal | Python Developer" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ site_config.meta_description|default:''|escape }}{% endblock %}" />
+  <meta name="keywords" content="{% block meta_keywords %}{{ site_config.meta_keywords|default:''|escape }}{% endblock %}" />
+  {% block extra_meta %}{% endblock %}
+
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
+  <meta name="csrf-token" content="{{ csrf_token }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/dist/output.css' %}">
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script>
+    // Tailwind is built locally into static/css/dist/output.css
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; background: #050811; color: #e2e8f0; overflow-x: hidden; }
+    ::selection { background: #00F5C4; color: #050811; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: #050811; }
+    ::-webkit-scrollbar-thumb { background: #00F5C4; border-radius: 2px; }
+
+    #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .grid-bg {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(0,245,196,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,196,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .glow-blob {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; opacity: 0.18;
+      animation: float 8s ease-in-out infinite;
+    }
+    .glass {
+      background: rgba(12,17,32,0.7);
+      border: 1px solid rgba(0,245,196,0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .glass:hover {
+      border-color: rgba(0,245,196,0.35);
+      box-shadow: 0 0 30px rgba(0,245,196,0.08), inset 0 0 30px rgba(0,245,196,0.03);
+      transition: all 0.4s ease;
+    }
+    .neon-text { color: #00F5C4; text-shadow: 0 0 20px rgba(0,245,196,0.6), 0 0 40px rgba(0,245,196,0.3); }
+    .grad-text {
+      background: linear-gradient(135deg, #00F5C4, #00B4D8, #FF2D78);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-x 4s ease infinite;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #00F5C4, #00B4D8);
+      color: #050811;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+    }
+    .btn-primary::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, #00B4D8, #00F5C4);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .btn-primary:hover::before { opacity: 1; }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,245,196,0.35); }
+    .btn-primary span { position: relative; z-index: 1; }
+    .btn-outline {
+      background: transparent;
+      color: #00F5C4;
+      font-weight: 600;
+      padding: 13px 32px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(0,245,196,0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+    }
+    .btn-outline:hover {
+      background: rgba(0,245,196,0.1);
+      border-color: #00F5C4;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,245,196,0.15);
+    }
+    .nav-link {
+      position: relative; color: #94a3b8; font-size: 14px; font-weight: 500;
+      transition: color 0.3s ease; cursor: pointer; text-decoration: none;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; width: 0; height: 1.5px;
+      background: #00F5C4; transition: width 0.3s ease;
+    }
+    .nav-link:hover { color: #00F5C4; }
+    .nav-link:hover::after { width: 100%; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16,1,0.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    #cursor-glow {
+      position: fixed; width: 300px; height: 300px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,245,196,0.06) 0%, transparent 70%);
+      pointer-events: none; z-index: 1; transform: translate(-50%,-50%);
+      transition: opacity 0.3s ease;
+    }
+    .form-input {
+      width: 100%; background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; padding: 14px 18px; color: #e2e8f0;
+      font-family: 'Poppins', sans-serif; font-size: 14px;
+      transition: all 0.3s ease; outline: none;
+    }
+    .form-input:focus {
+      border-color: rgba(0,245,196,0.5);
+      box-shadow: 0 0 0 3px rgba(0,245,196,0.08);
+      background: rgba(0,245,196,0.04);
+    }
+    .form-input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .mobile-menu {
+      background: rgba(5,8,17,0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,245,196,0.1);
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="font-poppins bg-dark text-slate-200 relative">
+  <div id="cursor-glow"></div>
+  <div class="grid-bg"></div>
+  <canvas id="particles"></canvas>
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 py-4 transition-all duration-500"
+       :class="scrolled ? 'glass shadow-2xl' : ''"
+       x-data="{ open: false, scrolled: false }"
+       @scroll.window="scrolled = window.scrollY > 40">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{% url 'index' %}" class="text-xl font-black tracking-tight">
+        <span class="neon-text">S</span><span class="text-white">D</span>
+        <span class="text-xs font-medium text-slate-500 ml-1 align-middle">/ dev</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="{% url 'index' %}#about" class="nav-link">About</a>
+        <a href="{% url 'index' %}#skills" class="nav-link">Skills</a>
+        <a href="{% url 'index' %}#projects" class="nav-link">Projects</a>
+        <a href="{% url 'index' %}#career" class="nav-link">Work History</a>
+        <a href="{% url 'blog_list' %}" class="nav-link">Blog</a>
+        <a href="{% url 'index' %}#contact" class="nav-link">Contact</a>
+        <a href="{% url 'index' %}#contact" class="btn-primary text-sm px-5 py-2.5"><span>Hire Me</span></a>
+      </div>
+      <button class="md:hidden text-brand focus:outline-none" @click="open = !open" aria-label="Toggle menu">
+        <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16M4 6h16"/>
+        </svg>
+        <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div x-show="open" x-transition class="mobile-menu md:hidden mt-4 p-6 rounded-2xl flex flex-col gap-4">
+      <a href="{% url 'index' %}#about" @click="open=false" class="nav-link text-lg">About</a>
+      <a href="{% url 'index' %}#skills" @click="open=false" class="nav-link text-lg">Skills</a>
+      <a href="{% url 'index' %}#projects" @click="open=false" class="nav-link text-lg">Projects</a>
+      <a href="{% url 'index' %}#career" @click="open=false" class="nav-link text-lg">Work History</a>
+      <a href="{% url 'blog_list' %}" @click="open=false" class="nav-link text-lg">Blog</a>
+      <a href="{% url 'index' %}#contact" @click="open=false" class="nav-link text-lg">Contact</a>
+    </div>
+  </nav>
+
+  <main class="relative z-10">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="relative border-t border-border py-10 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <p class="text-sm text-slate-600 font-mono">
+        © {% now "Y" %} <span class="text-brand">{% if profile %}{{ profile.name }}{% else %}{{ site_config.site_name|default:"Shekhar Dhakal" }}{% endif %}</span>
+        · Built with Love by <span class="text-slate-400">Proxysoft Pvt Ltd</span> (<a class="text-brand hover:underline" href="https://proxysoft.com.np" target="_blank" rel="noopener noreferrer">proxysoft.com.np</a>)
+      </p>
+      <form id="newsletter-form" method="post" action="{% url 'newsletter_submit' %}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        {% csrf_token %}
+        {% if newsletter_form %}{{ newsletter_form.email }}{% else %}<input type="email" name="email" placeholder="Subscribe to newsletter" class="form-input text-sm" required />{% endif %}
+        <button type="submit" class="btn-primary text-sm px-5 py-2.5 flex-shrink-0 whitespace-nowrap"><span>Subscribe</span></button>
+      </form>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function app() {
+      return {
+        init() {
+          // Scroll reveal
+          const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+              if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                observer.unobserve(e.target);
+              }
+            });
+          }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+          document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+          // Cursor glow
+          const cursor = document.getElementById('cursor-glow');
+          document.addEventListener('mousemove', e => {
+            if (!cursor) return;
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+          });
+
+          // Particles
+          this.initParticles();
+        },
+        initParticles() {
+          const canvas = document.getElementById('particles');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          let w, h, particles = [];
+          function resize() {
+            w = canvas.width = window.innerWidth;
+            h = canvas.height = window.innerHeight;
+          }
+          resize();
+          window.addEventListener('resize', resize);
+          class Particle {
+            constructor() { this.reset(); }
+            reset() {
+              this.x = Math.random() * w;
+              this.y = Math.random() * h;
+              this.r = Math.random() * 1.5 + 0.3;
+              this.vx = (Math.random() - 0.5) * 0.3;
+              this.vy = (Math.random() - 0.5) * 0.3;
+              this.alpha = Math.random() * 0.5 + 0.1;
+              this.color = Math.random() > 0.7 ? '#FF2D78' : '#00F5C4';
+            }
+            update() {
+              this.x += this.vx;
+              this.y += this.vy;
+              if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset();
+            }
+            draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+              ctx.fillStyle = this.color + Math.round(this.alpha * 255).toString(16).padStart(2, '0');
+              ctx.fill();
+            }
+          }
+          for (let i = 0; i < 120; i++) particles.push(new Particle());
+          function drawLines() {
+            for (let i = 0; i < particles.length; i++) {
+              for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 100) {
+                  ctx.beginPath();
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.strokeStyle = `rgba(0,245,196,${0.06 * (1 - dist / 100)})`;
+                  ctx.lineWidth = 0.5;
+                  ctx.stroke();
+                }
+              }
+            }
+          }
+          function animate() {
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawLines();
+            requestAnimationFrame(animate);
+          }
+          animate();
+        }
+      }
+    }
+  </script>
+  <script>
+    (function() {
+      function getCookie(name) {
+        var v = null;
+        if (document.cookie && document.cookie !== '') {
+          document.cookie.split(';').forEach(function(part) {
+            part = part.trim();
+            if (part.indexOf(name + '=') === 0) v = decodeURIComponent(part.substring(name.length + 1));
+          });
+        }
+        return v;
+      }
+      var csrftoken = getCookie('csrftoken');
+      if (!csrftoken) {
+        var m = document.querySelector('meta[name="csrf-token"]');
+        if (m) csrftoken = m.getAttribute('content');
+      }
+      function ajaxForm(formId) {
+        var form = document.getElementById(formId);
+        if (!form || typeof Swal === 'undefined') return;
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          var btn = form.querySelector('button[type="submit"]');
+          var span = btn ? btn.querySelector('span') : null;
+          var orig = span ? span.textContent : (btn ? btn.textContent : '');
+          if (btn) { btn.disabled = true; if (span) span.textContent = 'Sending...'; else btn.textContent = 'Sending...'; }
+          var fd = new FormData(form);
+          fetch(form.action, {
+            method: 'POST',
+            body: fd,
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': csrftoken || '' }
+          })
+          .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+          .then(function(res) {
+            if (btn) { btn.disabled = false; if (span) span.textContent = orig; else btn.textContent = orig; }
+            if (res.ok && res.data.success) {
+              Swal.fire({ icon: 'success', title: 'Success', text: res.data.message, confirmButtonColor: '#00B4D8' });
+              form.reset();
+            } else {
+              var msg = (res.data && res.data.message) || 'Please try again.';
+              if (res.data && res.data.errors) msg = Object.values(res.data.errors).join(' ');
+              Swal.fire({ icon: 'error', title: 'Error', text: msg, confirmButtonColor: '#00B4D8' });
+            }
+          })
+          .catch(function() {
+            if (btn) { btn.disabled = false; if (span) span.textContent = orig; else btn.textContent = orig; }
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Network error.', confirmButtonColor: '#00B4D8' });
+          });
+        });
+      }
+      ajaxForm('newsletter-form');
+      ajaxForm('contact-form');
+    })();
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
+
