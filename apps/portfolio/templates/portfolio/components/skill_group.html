@@ -1,0 +1,12 @@
+{% load portfolio_tags %}
+<div class="bg-paper p-6 dark:bg-night sm:p-8">
+    <h3 class="font-mono text-[11px] font-medium uppercase tracking-[0.16em] text-leaf dark:text-sage">{{ category }}</h3>
+    <ul class="mt-5 space-y-3">
+        {% for skill in skills %}
+        <li class="flex items-center gap-3 text-[15px] text-ink dark:text-sand">
+            <i class="{{ skill|skill_fa_icon }} w-4 text-center text-sm text-leaf dark:text-sage" aria-hidden="true"></i>
+            <span>{{ skill.name }}</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

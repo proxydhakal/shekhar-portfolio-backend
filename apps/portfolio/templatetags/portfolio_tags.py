@@ -1,4 +1,7 @@
+import html
+
 from django import template
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -39,6 +42,34 @@ SKILL_FA_ICONS = {
 }
 
 DEFAULT_SKILL_ICON = "fa-solid fa-code"
+
+
+@register.filter
+def render_richtext(value):
+    """Render stored rich text, including CKEditor HTML saved with escaped tags."""
+    if not value:
+        return ""
+    text = str(value)
+    if "&lt;" in text:
+        text = html.unescape(text)
+    return mark_safe(text)
+
+
+@register.filter
+def as_lines(value):
+    """Split a plain-text block into lines and strip common bullet markers."""
+    if not value:
+        return []
+    lines = []
+    for raw in str(value).replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+        line = raw.strip()
+        if line.startswith(("•", "·")):
+            line = line[1:].strip()
+        elif line.startswith(("- ", "* ")):
+            line = line[2:].strip()
+        if line:
+            lines.append(line)
+    return lines
 
 
 @register.filter

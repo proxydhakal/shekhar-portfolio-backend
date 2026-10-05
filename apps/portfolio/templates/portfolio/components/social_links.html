@@ -1,0 +1,17 @@
+<ul class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+    {% if show_email != "no" and site_config.email %}
+    <li><a class="link-arrow inline-flex items-center gap-2 text-ink underline decoration-line underline-offset-4 hover:decoration-accent dark:text-sand" href="mailto:{{ site_config.email }}"><i class="fa-solid fa-envelope text-leaf" aria-hidden="true"></i>Email</a></li>
+    {% endif %}
+    {% if site_config.github_link %}
+    <li><a class="link-arrow inline-flex items-center gap-2 text-ink underline decoration-line underline-offset-4 hover:decoration-accent dark:text-sand" href="{{ site_config.github_link }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github text-leaf" aria-hidden="true"></i>GitHub</a></li>
+    {% endif %}
+    {% if site_config.linkedin_link %}
+    <li><a class="link-arrow inline-flex items-center gap-2 text-ink underline decoration-line underline-offset-4 hover:decoration-accent dark:text-sand" href="{{ site_config.linkedin_link }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin text-leaf" aria-hidden="true"></i>LinkedIn</a></li>
+    {% endif %}
+    {% if site_config.twitter_link %}
+    <li><a class="link-arrow inline-flex items-center gap-2 text-ink underline decoration-line underline-offset-4 hover:decoration-accent dark:text-sand" href="{{ site_config.twitter_link }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter text-leaf" aria-hidden="true"></i>X</a></li>
+    {% endif %}
+    {% if site_config.facebook_link %}
+    <li><a class="link-arrow inline-flex items-center gap-2 text-ink underline decoration-line underline-offset-4 hover:decoration-accent dark:text-sand" href="{{ site_config.facebook_link }}" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook text-leaf" aria-hidden="true"></i>Facebook</a></li>
+    {% endif %}
+</ul>

@@ -5,43 +5,50 @@ module.exports = {
     './apps/portfolio/templates/**/*.html',
     './apps/blog/templates/**/*.html',
     './templates/**/*.html',
+    './static/js/**/*.js',
   ],
   theme: {
     extend: {
       colors: {
-        // Existing palette
-        primary: '#6366f1',
-        secondary: '#a855f7',
-        accent: '#10b981',
-        darkBg: '#020617',
-
-        // Neon theme palette (used by home + blog neon templates)
-        brand: '#00F5C4',
-        brandpink: '#FF2D78',
-        dark: '#050811',
-        card: '#0C1120',
-        border: '#1A2540',
+        sand: '#DAD7CD',
+        sage: '#A3B18A',
+        leaf: '#588157',
+        forest: '#3A5A40',
+        pine: '#344E41',
+        ink: '#344E41',
+        muted: '#5C6B59',
+        line: '#C9CFC0',
+        paper: '#DAD7CD',
+        night: '#344E41',
+        panel: '#3A5A40',
+        accent: {
+          DEFAULT: '#588157',
+          deep: '#3A5A40',
+        },
       },
-      fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        mono: ['Fira Code', 'monospace'],
-        poppins: ['Poppins', 'sans-serif'],
-      },
-      animation: {
-        float: 'float 6s ease-in-out infinite',
-        float2: 'float 8s ease-in-out infinite 2s',
-        float3: 'float 7s ease-in-out infinite 4s',
-        'spin-slow': 'spin 20s linear infinite',
-        'pulse-slow': 'pulse 4s ease-in-out infinite',
-        shimmer: 'shimmer 2s linear infinite',
-        'gradient-x': 'gradient-x 4s ease infinite',
-        'fade-up': 'fadeUp 0.7s ease both',
+      backgroundImage: {
+        theme: 'linear-gradient(120deg, #A3B18A 0%, #588157 42%, #3A5A40 78%, #344E41 100%)',
       },
       keyframes: {
-        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-20px)' } },
-        shimmer: { '0%': { backgroundPosition: '-200% center' }, '100%': { backgroundPosition: '200% center' } },
-        'gradient-x': { '0%,100%': { backgroundPosition: '0% 50%' }, '50%': { backgroundPosition: '100% 50%' } },
-        fadeUp: { '0%': { opacity: 0, transform: 'translateY(30px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+        wash: {
+          '0%': { transform: 'translate3d(0, 0, 0) scale(1)' },
+          '100%': { transform: 'translate3d(0, -12px, 0) scale(1.04)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '100%': { backgroundPosition: '100% 50%' },
+        },
+      },
+      animation: {
+        wash: 'wash 12s ease-in-out infinite alternate',
+        shimmer: 'shimmer 5s ease infinite alternate',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      maxWidth: {
+        page: '72rem',
       },
     },
   },

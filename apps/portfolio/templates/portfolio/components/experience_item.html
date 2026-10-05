@@ -1,0 +1,29 @@
+{% load portfolio_tags %}
+<li class="timeline-item rounded-lg border border-line bg-white p-5 dark:border-white/10 dark:bg-panel sm:p-6 lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:pb-12 lg:pl-8">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+        <div class="lg:col-span-3">
+            <p class="font-mono text-xs text-muted">{{ exp.duration }}</p>
+            {% if exp.is_primary %}
+            <p class="mt-2 inline-flex items-center gap-2 text-xs font-medium text-leaf dark:text-sage">
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                Current
+            </p>
+            {% endif %}
+        </div>
+        <div class="mt-4 lg:col-span-9 lg:mt-0">
+            <h3 class="text-lg font-semibold tracking-tight text-ink dark:text-sand sm:text-xl">{{ exp.role }}</h3>
+            <p class="mt-1 text-sm text-muted">{{ exp.company }}</p>
+            {% with lines=exp.description|as_lines %}
+            {% if lines|length > 1 %}
+            <ul class="clean-list mt-4 text-sm leading-relaxed text-muted dark:text-sand/80">
+                {% for line in lines %}
+                <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+            {% elif exp.description %}
+            <p class="mt-4 text-sm leading-relaxed text-muted dark:text-sand/80">{{ exp.description }}</p>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</li>

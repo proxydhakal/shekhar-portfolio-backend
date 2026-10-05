@@ -1,0 +1,50 @@
+<header id="site-header" class="sticky top-0 z-50">
+    <div class="shell flex h-16 items-center justify-between gap-3">
+        <a href="{% url 'index' %}" class="truncate text-[15px] font-semibold tracking-tight text-ink dark:text-sand">
+            <i class="fa-solid fa-terminal mr-1.5 text-leaf" aria-hidden="true"></i>{% if profile %}{{ profile.name }}{% else %}{{ site_config.site_name|default:"Shekhar Dhakal" }}{% endif %}
+        </a>
+
+        <nav class="hidden items-center gap-4 lg:flex xl:gap-6" aria-label="Primary">
+            <a href="{% url 'index' %}#about" class="nav-link inline-flex items-center gap-1.5" data-nav="about"><i class="fa-solid fa-user hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>About</a>
+            <a href="{% url 'index' %}#career" class="nav-link inline-flex items-center gap-1.5" data-nav="career"><i class="fa-solid fa-briefcase hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>Experience</a>
+            <a href="{% url 'index' %}#projects" class="nav-link inline-flex items-center gap-1.5" data-nav="projects"><i class="fa-solid fa-folder-open hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>Projects</a>
+            <a href="{% url 'index' %}#skills" class="nav-link inline-flex items-center gap-1.5" data-nav="skills"><i class="fa-solid fa-code hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>Skills</a>
+            {% if request.resolver_match.url_name == 'blog_list' or request.resolver_match.url_name == 'blog_detail' %}
+            <a href="{% url 'blog_list' %}" class="nav-link inline-flex items-center gap-1.5" aria-current="page"><i class="fa-solid fa-pen-nib hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>Writing</a>
+            {% else %}
+            <a href="{% url 'index' %}#blog" class="nav-link inline-flex items-center gap-1.5" data-nav="blog"><i class="fa-solid fa-pen-nib hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>Writing</a>
+            {% endif %}
+            <a href="{% url 'index' %}#contact" class="nav-link inline-flex items-center gap-1.5" data-nav="contact"><i class="fa-solid fa-envelope hidden text-[11px] text-leaf xl:inline" aria-hidden="true"></i>Contact</a>
+        </nav>
+
+        <div class="flex items-center gap-1 sm:gap-2">
+            <a href="{% url 'index' %}#contact" class="btn-primary hidden lg:inline-flex"><i class="fa-solid fa-paper-plane text-xs" aria-hidden="true"></i>Get in touch</a>
+            <button id="theme-toggle" type="button" class="inline-flex h-11 w-11 items-center justify-center text-ink dark:text-sand" aria-label="Switch color theme">
+                <i class="fa-solid fa-moon dark:hidden" aria-hidden="true"></i>
+                <i class="fa-solid fa-sun hidden dark:inline" aria-hidden="true"></i>
+            </button>
+            <button id="menu-toggle" type="button" class="menu-toggle inline-flex h-11 w-11 items-center justify-center text-lg text-ink dark:text-sand lg:hidden" aria-controls="mobile-menu" aria-expanded="false" aria-label="Open menu">
+                <i class="fa-solid fa-bars menu-icon-open" aria-hidden="true"></i>
+                <i class="fa-solid fa-xmark menu-icon-close" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="mobile-menu absolute inset-x-0 top-full border-b border-line bg-paper shadow-header dark:border-white/10 dark:bg-night lg:hidden" aria-hidden="true">
+        <nav class="shell flex flex-col py-3" aria-label="Mobile">
+            <a href="{% url 'index' %}#about" class="flex items-center gap-3 border-b border-line py-3.5 text-base font-medium dark:border-white/10" data-nav="about"><i class="fa-solid fa-user w-5 text-center text-leaf" aria-hidden="true"></i>About</a>
+            <a href="{% url 'index' %}#career" class="flex items-center gap-3 border-b border-line py-3.5 text-base font-medium dark:border-white/10" data-nav="career"><i class="fa-solid fa-briefcase w-5 text-center text-leaf" aria-hidden="true"></i>Experience</a>
+            <a href="{% url 'index' %}#projects" class="flex items-center gap-3 border-b border-line py-3.5 text-base font-medium dark:border-white/10" data-nav="projects"><i class="fa-solid fa-folder-open w-5 text-center text-leaf" aria-hidden="true"></i>Projects</a>
+            <a href="{% url 'index' %}#skills" class="flex items-center gap-3 border-b border-line py-3.5 text-base font-medium dark:border-white/10" data-nav="skills"><i class="fa-solid fa-code w-5 text-center text-leaf" aria-hidden="true"></i>Skills</a>
+            <a href="{% if request.resolver_match.url_name == 'blog_list' or request.resolver_match.url_name == 'blog_detail' %}{% url 'blog_list' %}{% else %}{% url 'index' %}#blog{% endif %}" class="flex items-center gap-3 border-b border-line py-3.5 text-base font-medium dark:border-white/10" {% if request.resolver_match.url_name != 'blog_list' and request.resolver_match.url_name != 'blog_detail' %}data-nav="blog"{% endif %}><i class="fa-solid fa-pen-nib w-5 text-center text-leaf" aria-hidden="true"></i>Writing</a>
+            <a href="{% url 'index' %}#contact" class="flex items-center gap-3 py-3.5 text-base font-medium" data-nav="contact"><i class="fa-solid fa-envelope w-5 text-center text-leaf" aria-hidden="true"></i>Contact</a>
+            <a href="{% url 'index' %}#contact" class="btn-primary mt-3 mb-2"><i class="fa-solid fa-paper-plane text-xs" aria-hidden="true"></i>Get in touch</a>
+            {% if site_config.email or site_config.phone %}
+            <div class="mt-2 border-t border-line pt-4 text-sm text-muted dark:border-white/10">
+                {% if site_config.email %}<p class="truncate"><i class="fa-solid fa-envelope mr-2 text-leaf" aria-hidden="true"></i>{{ site_config.email }}</p>{% endif %}
+                {% if site_config.phone %}<p class="mt-2"><i class="fa-solid fa-phone mr-2 text-leaf" aria-hidden="true"></i>{{ site_config.phone }}</p>{% endif %}
+            </div>
+            {% endif %}
+        </nav>
+    </div>
+</header>

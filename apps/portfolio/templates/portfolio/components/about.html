@@ -1,0 +1,76 @@
+<section id="about" class="border-t border-line dark:border-white/10" aria-labelledby="about-heading">
+    <div class="shell grid gap-10 py-16 sm:py-20 lg:grid-cols-12 lg:gap-16 lg:py-28">
+        {% include "portfolio/components/section_header.html" with number="01" title="About" heading_id="about-heading" %}
+        <div class="lg:col-span-8">
+            {% if profile and profile.bio %}
+            {% if not profile.about_bullet_1 and not profile.about_bullet_2 and not profile.about_bullet_3 %}
+            <p class="max-w-2xl text-lg leading-relaxed text-muted dark:text-sand/80">{{ profile.bio }}</p>
+            {% endif %}
+            {% endif %}
+
+            {% if profile %}
+            {% if profile.about_bullet_1 or profile.about_bullet_2 or profile.about_bullet_3 %}
+            <ol class="max-w-2xl divide-y divide-line border-y border-line dark:divide-white/10 dark:border-white/10">
+                {% if profile.about_bullet_1 %}
+                <li class="grid grid-cols-[2.5rem_1fr] gap-4 py-4 text-sm leading-relaxed sm:text-base">
+                    <span class="font-mono text-xs text-muted">01</span>
+                    <span>{{ profile.about_bullet_1 }}</span>
+                </li>
+                {% endif %}
+                {% if profile.about_bullet_2 %}
+                <li class="grid grid-cols-[2.5rem_1fr] gap-4 py-4 text-sm leading-relaxed sm:text-base">
+                    <span class="font-mono text-xs text-muted">02</span>
+                    <span>{{ profile.about_bullet_2 }}</span>
+                </li>
+                {% endif %}
+                {% if profile.about_bullet_3 %}
+                <li class="grid grid-cols-[2.5rem_1fr] gap-4 py-4 text-sm leading-relaxed sm:text-base">
+                    <span class="font-mono text-xs text-muted">03</span>
+                    <span>{{ profile.about_bullet_3 }}</span>
+                </li>
+                {% endif %}
+            </ol>
+            {% endif %}
+            {% endif %}
+
+            <dl class="mt-10 grid gap-px border border-line bg-line dark:border-white/10 dark:bg-white/10 sm:grid-cols-2">
+                {% if profile and profile.role %}
+                <div class="bg-paper px-5 py-4 dark:bg-night">
+                    <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted"><i class="fa-solid fa-user-tie mr-1.5 text-leaf" aria-hidden="true"></i>Role</dt>
+                    <dd class="mt-2 text-sm font-medium">{{ profile.role }}</dd>
+                </div>
+                {% endif %}
+                {% if profile and profile.current_company %}
+                <div class="bg-paper px-5 py-4 dark:bg-night">
+                    <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted"><i class="fa-solid fa-building mr-1.5 text-leaf" aria-hidden="true"></i>Company</dt>
+                    <dd class="mt-2 text-sm font-medium">{{ profile.current_company }}</dd>
+                </div>
+                {% endif %}
+                {% if site_config.location %}
+                <div class="bg-paper px-5 py-4 dark:bg-night">
+                    <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted"><i class="fa-solid fa-location-dot mr-1.5 text-leaf" aria-hidden="true"></i>Based in</dt>
+                    <dd class="mt-2 text-sm font-medium">{{ site_config.location }}</dd>
+                </div>
+                {% endif %}
+                {% if experiences %}
+                <div class="bg-paper px-5 py-4 dark:bg-night">
+                    <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted"><i class="fa-solid fa-briefcase mr-1.5 text-leaf" aria-hidden="true"></i>Roles</dt>
+                    <dd class="mt-2 text-sm font-medium">{{ experiences|length }} on record</dd>
+                </div>
+                {% endif %}
+                {% if projects %}
+                <div class="bg-paper px-5 py-4 dark:bg-night">
+                    <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted"><i class="fa-solid fa-folder-open mr-1.5 text-leaf" aria-hidden="true"></i>Selected work</dt>
+                    <dd class="mt-2 text-sm font-medium">{{ projects|length }} {% if projects|length == 1 %}project{% else %}projects{% endif %}</dd>
+                </div>
+                {% endif %}
+                {% if education_list %}
+                <div class="bg-paper px-5 py-4 dark:bg-night">
+                    <dt class="font-mono text-[11px] uppercase tracking-[0.14em] text-muted"><i class="fa-solid fa-graduation-cap mr-1.5 text-leaf" aria-hidden="true"></i>Education</dt>
+                    <dd class="mt-2 text-sm font-medium">{{ education_list.0.degree }}</dd>
+                </div>
+                {% endif %}
+            </dl>
+        </div>
+    </div>
+</section>
